@@ -11,6 +11,7 @@ Home, Chi sono, Portfolio, CV, Contatti.
 - Bootstrap (solo CSS, da CDN) per le colonne della pagina e alcune classi di supporto
 - Flexbox e CSS Grid per la disposizione degli elementi
 - EmailJS per l'invio del modulo di contatto (unico JavaScript del sito)
+- Strumenti: Figma per il design; Claude (assistente AI) come supporto alla scrittura del codice, con revisione e decisioni mie
 
 ## Scelte principali
 - Mobile first, con un solo breakpoint a 768px
