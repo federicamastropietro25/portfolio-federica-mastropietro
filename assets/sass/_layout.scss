@@ -1,0 +1,414 @@
+// LAYOUT: la griglia di Bootstrap adattata a Figma, la navigazione e il footer.
+@use "variabili" as *;
+
+// =============================================================
+// GRIGLIA: uso le colonne di Bootstrap e le regolo sulla griglia di Figma
+// - Mobile: 4 colonne, spazio 16px, margini 16px
+//   (1 colonna di Figma = col-3, 2 = col-6, 4 = col-12 di Bootstrap)
+// - Desktop (da 768px): 12 colonne, spazio 24px, contenuto largo al massimo 1080px
+// Il mio CSS viene dopo quello di Bootstrap, quindi questi valori hanno la precedenza.
+// Non uso le classi g-* / gx-* di Bootstrap per lo spazio orizzontale: ci pensa già la regola
+// su .row. Per lo spazio verticale uso gy-* (gy-2 = 8px, gy-3 = 16px, gy-4 = 24px).
+// =============================================================
+.container {
+  // Annullo le larghezze massime che Bootstrap imposta per ogni breakpoint
+  max-width: 100%;
+  // Margini laterali di Figma (il padding del container + lo spazio delle colonne)
+  padding-left: $griglia-margine;
+  padding-right: $griglia-margine;
+
+  @include da-desktop {
+    // Larghezza della griglia (1080px) + i due margini laterali (16px ciascuno)
+    max-width: $griglia-larghezza-max + 2 * $griglia-margine;
+  }
+}
+
+.row {
+  // Spazio tra le colonne: 16px su mobile, 24px da desktop
+  --bs-gutter-x: #{$griglia-gutter-mobile};
+
+  @include da-desktop {
+    --bs-gutter-x: #{$griglia-gutter-desktop};
+  }
+}
+
+// =============================================================
+// NAVIGAZIONE (header sticky): logo, menu, pulsante "Contattami"
+// Struttura nell'HTML:
+//   <header class="navigazione"><div class="container"><div class="navigazione__contenuto">
+//     logo + checkbox del menu + pulsante hamburger + <nav class="navigazione__menu"> (con dentro il pulsante X)
+// - La barra resta fissa in alto su mobile e desktop (position: sticky).
+// - Mobile: barra alta 80px (16px sopra + 48px + 16px sotto); il menu si apre a tutto schermo, senza JavaScript.
+// - Desktop (da 768px): barra alta 120px (in Figma 144px, ridotta perché è sempre visibile), link in riga.
+// =============================================================
+.navigazione {
+  position: sticky;
+  top: 0;
+  z-index: 100; // sta sopra il contenuto della pagina
+  background-color: $colore-sfondo;
+}
+
+.navigazione__contenuto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 1rem; // 16px sopra e 16px sotto: il logo ha respiro anche sotto, soprattutto quando scorro la pagina
+
+  @include da-desktop {
+    padding-top: $navigazione-padding-sopra; // 48px
+    padding-bottom: $navigazione-padding-sotto; // 24px (in Figma 48px: barra alta 120px invece di 144px, perché è sticky)
+  }
+}
+
+// Logo (link alla home)
+.navigazione__logo {
+  display: block;
+  width: 3rem; // 48px
+  height: 3rem;
+  border-radius: $raggio-piccolo;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: $focus-anello;
+  }
+}
+
+// MENU MOBILE SENZA JAVASCRIPT
+// Nell'HTML c'è una casella (checkbox) nascosta, "menu-check": l'hamburger e la X sono due <label> che la spuntano o la tolgono.
+// ":checked" è la casella spuntata e "~" vuol dire "gli elementi che seguono": ".menu-check:checked ~ .navigazione .navigazione__menu"
+// è "il menu, quando la casella è spuntata". Così il menu a tutto schermo si vede solo a casella spuntata.
+// La casella riceve il focus quando clicco l'hamburger e il browser potrebbe far scorrere la pagina fino a lei:
+// la fisso in alto a sinistra, così è già in vista e la pagina non scorre.
+.menu-check.visually-hidden {
+  // Bootstrap imposta "position: absolute !important": per vincere ripeto la classe visually-hidden e uso !important
+  position: fixed !important;
+  top: 0;
+  left: 0;
+}
+
+// Con il menu aperto l'hamburger non si vede più (c'è la X dentro il menu).
+// Uso "visibility: hidden" e non "display: none": così occupa ancora il suo spazio e la barra sotto non cambia di misura.
+.menu-check:checked~.navigazione .pulsante-menu-apri {
+  visibility: hidden;
+}
+
+// Focus da tastiera sulla checkbox nascosta: l'anello compare sul pulsante che si vede
+// (l'hamburger a menu chiuso, la X a menu aperto)
+.menu-check:focus-visible~.navigazione .pulsante-menu-apri,
+.menu-check:focus-visible~.navigazione .navigazione__menu .pulsante-icona {
+  background-color: $neutro-100;
+  box-shadow: $focus-anello;
+}
+
+// Menu mobile: pannello a tutto schermo sopra la pagina (position: fixed, quindi non sposta nulla).
+// Da chiuso è fuori dallo schermo a destra (translateX(100%)) e con visibility: hidden non si clicca né si raggiunge con la tastiera.
+// Con la casella spuntata scorre al suo posto in 0,35 secondi (transition).
+// Trucco: la visibility cambia sempre subito (0s). Se aspettasse la fine dello scorrimento, rimpicciolendo la finestra
+// da desktop a mobile si vedrebbe per un attimo il menu scorrere fuori da solo.
+.navigazione__menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  overflow-y: auto;
+  padding: 7.5rem 1rem 2rem; // 120px sopra: le voci iniziano sotto la barra
+  background-color: $colore-sfondo;
+
+  // stato chiuso: fuori dallo schermo, a destra
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: transform 0.35s ease, visibility 0s;
+}
+
+// stato aperto
+.menu-check:checked~.navigazione .navigazione__menu {
+  visibility: visible;
+  transform: none;
+}
+
+// Pulsante X: in alto a destra, allineato al margine di 16px
+.navigazione__menu .pulsante-menu-chiudi {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+// Con il menu aperto la pagina sotto deve restare ferma. Non uso "overflow: hidden" sul body (su mobile sposta la pagina):
+// con "overscroll-behavior: contain" lo scorrimento sul menu non passa alla pagina sotto.
+.navigazione__menu {
+  overscroll-behavior: contain;
+}
+
+.navigazione__lista {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem; // 8px tra le voci
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// "Contattami" è un semplice link su mobile e un bottone su desktop: ho due <li> e ne mostro uno alla volta
+.navigazione__lista .solo-desktop {
+  display: none;
+}
+
+// Pagina corrente: la voce ha lo stesso aspetto dell'hover (in Figma non l'avevo definito)
+.navigazione .voce-nav[aria-current="page"]:not(:focus-visible) {
+  color: $secondario-500;
+
+  &::after {
+    background-color: $secondario-500;
+  }
+}
+
+@include da-desktop {
+
+  // Desktop: niente hamburger né X, il menu è sempre visibile in riga dentro la barra
+  // (questi selettori sono più specifici delle regole di .menu-check:checked ~ ..., così vincono anche a menu "aperto")
+  .navigazione__contenuto .pulsante-menu-apri,
+  .navigazione__menu .pulsante-menu-chiudi {
+    display: none;
+  }
+
+  .navigazione__menu,
+  .menu-check:checked~.navigazione .navigazione__menu {
+    display: block;
+    position: static;
+    z-index: auto;
+    overflow: visible;
+    padding: 0;
+    background-color: transparent;
+    // su desktop il menu è sempre visibile: nessuna animazione
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+
+  .navigazione__lista {
+    flex-direction: row;
+    gap: 3rem; // 48px tra le voci e il pulsante
+
+    .solo-mobile {
+      display: none;
+    }
+
+    .solo-desktop {
+      display: list-item;
+    }
+  }
+}
+
+// =============================================================
+// FOOTER: logo, link "Contattami", icone social e copyright
+// Mobile: tutto in colonna, allineato a sinistra; il copyright è al centro.
+// Desktop: logo a sinistra; a destra link e social allineati a destra.
+// =============================================================
+.footer-sito {
+  padding-block: 2.5rem; // 40px
+  background-color: $primario-200;
+
+  @include da-desktop {
+    padding-block: 3rem; // 48px
+  }
+}
+
+// Righe con la griglia di Bootstrap: logo (6 colonne) a sinistra e contatti (6 colonne) a destra da desktop;
+// su mobile una colonna sotto l'altra. Il copyright è su una riga sua (col-12).
+.footer-sito__riga {
+  --bs-gutter-y: 2rem; // 32px tra logo, contatti e copyright
+}
+
+.footer-sito__logo {
+  display: block;
+  width: 4.5rem; // 72px
+  height: 4.5rem;
+  border-radius: $raggio-piccolo;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: $focus-anello;
+  }
+}
+
+.footer-sito__contatti {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem; // 16px
+
+  @include da-desktop {
+    align-items: flex-end;
+  }
+}
+
+.footer-sito__social {
+  display: flex;
+  gap: 1rem; // 16px
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  // Ogni voce è un contenitore flex: così, quando l'icona si ingrandisce all'hover, non sposta
+  // il resto del footer (senza questo la riga del testo cambiava altezza e il copyright si muoveva)
+  li {
+    display: flex;
+  }
+}
+
+.footer-sito__copyright {
+  margin: 0.5rem 0 0; // mobile: 32px della riga + 8px = 40px dai contatti
+  text-align: center;
+  color: $primario-800;
+  @include stile-testo($body-small-mobile);
+
+  @include da-desktop {
+    margin-top: 0; // desktop: ci sono già i 32px della griglia
+    @include stile-testo($body-small-desktop);
+  }
+}
+
+// =============================================================
+// SEZIONI DELLA PAGINA: spazio tra le sezioni e intestazione (titolo + testo + bottone)
+// Le colonne sono di Bootstrap: testi su col-md-8, bottone su col-md-4 (su mobile sotto le card), card su col-12.
+// Qui c'è solo il mio CSS: spazi, testi e allineamenti dentro le colonne.
+// =============================================================
+// Gli spazi crescono piano piano con la larghezza (funzione "fluido"): da 64px (393px) a 112px (1112px);
+// l'ultima sezione prima del footer da 80px a 112px.
+.sezione {
+  padding-top: fluido(4rem, 7rem);
+}
+
+.sezione--finale {
+  padding-bottom: fluido(5rem, 7rem);
+}
+
+.sezione__testi {
+  text-align: center;
+
+  @include da-desktop {
+    max-width: 34.5rem; // 552px
+    text-align: left;
+  }
+}
+
+// Variante con il testo più stretto (Metodologia e Valori: 520px)
+.sezione__testi--stretti {
+  @include da-desktop {
+    max-width: 32.5rem;
+  }
+}
+
+.sezione__titolo {
+  margin-bottom: 0.5rem; // 8px
+
+  @include da-desktop {
+    margin-bottom: 1rem; // 16px
+  }
+}
+
+.sezione__testi p {
+  margin: 0;
+}
+
+// Bottone dentro la sua colonna: su mobile a tutta larghezza; su desktop a destra e centrato in verticale rispetto al testo
+.sezione__azione {
+  // Mobile: a tutta larghezza fino a 448px, poi resta di 448px e centrato
+  max-width: $bottone-larghezza-max-mobile;
+  margin-inline: auto;
+
+  .btn {
+    width: 100%;
+  }
+
+  @include da-desktop {
+    max-width: none;
+    margin-inline: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+
+    .btn {
+      width: auto;
+    }
+  }
+}
+
+// LISTE DI CARD (Home): CSS Grid dentro la colonna di Bootstrap.
+// - .griglia-valori: una colonna su mobile, tre da desktop.
+// - .griglia-progetti: una colonna su tutto il mobile (fino a 767px), due da desktop.
+// Quando la lista è a una colonna le card riempiono tutta la larghezza disponibile e si restringono piano piano fino
+// alla versione mobile (361px a 393px). Anche le card dei valori restano a tutta larghezza della colonna, come in Figma.
+.griglia-valori,
+.griglia-progetti {
+  display: grid;
+  gap: 1rem; // 16px
+
+  @include da-desktop {
+    gap: 1.5rem; // 24px
+  }
+
+  >li {
+    min-width: 0; // permette alla colonna di restringersi senza che il contenuto la allarghi
+  }
+}
+
+.griglia-valori {
+  @include da-desktop {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.griglia-progetti {
+
+  // Una colonna su tutto il mobile; da desktop due
+  @include da-desktop {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Titolo grande di una sezione (es. "Di cosa mi occupo"): centrato su mobile, a sinistra su desktop.
+// Sotto c'è uno spazio di 32px su mobile e 48px su desktop prima del contenuto.
+.sezione__titolo-grande {
+  margin-bottom: 2rem;
+  text-align: center;
+
+  @include da-desktop {
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+}
+
+// INTRODUZIONE DI PAGINA (Portfolio, Contatti): titolo e testo centrati.
+.intro-pagina {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; // 24px tra titolo e testo
+  // Larghezza massima del testo: cresce piano piano da 295px (a 393px) a 600px (a 768px, come in Figma),
+  // così passando a desktop non cambia di colpo. Il calcolo è: 81.33vw - 24.6px.
+  max-width: clamp(18.4375rem, calc(81.33vw - 24.6px), 37.5rem);
+  margin-inline: auto;
+  text-align: center;
+
+  @include da-desktop {
+    gap: 1rem; // 16px
+    max-width: 37.5rem; // 600px
+  }
+}

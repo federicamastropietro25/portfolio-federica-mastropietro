@@ -1,0 +1,116 @@
+// CONTATTI: introduzione centrata e due schede, la foto con le informazioni e il modulo di contatto.
+// Le colonne le decide la griglia di Bootstrap (5 + 7 su 12 da desktop); dentro le colonne dispongo tutto io con Flexbox.
+@use "../variabili" as *;
+
+// =============================================================
+// INTRODUZIONE: titolo e testo centrati
+// Il blocco `.intro-pagina` è in _layout.scss. Qui regolo il paragrafo: su mobile è più stretto del titolo (263px a 393px)
+// e cresce fino a 600px (a 768px). Calcolo: 89.6vw - 89px.
+// =============================================================
+.contatti-intro {
+  // Spazio tra la barra e il titolo: da 32px (mobile) a 48px (desktop), cresce piano piano (come nelle altre pagine)
+  padding-top: fluido(2rem, 3rem);
+
+  .intro-pagina p {
+    max-width: clamp(16.4375rem, calc(89.6vw - 89px), 37.5rem);
+  }
+}
+
+// =============================================================
+// CORPO: le due schede
+// =============================================================
+.contatti-corpo {
+  padding-top: 4rem; // 64px tra l'introduzione e le schede (mobile e desktop)
+}
+
+// Scheda con sfondo rosa chiaro. "height: 100%" la fa alta quanto la colonna: da desktop le due schede
+// affiancate hanno la stessa altezza. Il padding cresce piano piano da 16px a 24px.
+.contatti-scheda {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; // 24px
+  height: 100%;
+  padding: fluido(1rem, 1.5rem);
+  border-radius: 1rem;
+  background-color: $primario-100;
+}
+
+// --- Scheda con la foto e le informazioni ---
+// Mobile: la foto ha la proporzione di Figma (329 x 364). Da desktop occupa tutto lo spazio che resta nella scheda
+// (la scheda è alta quanto quella del modulo), quindi la foto si adatta senza deformarsi ("object-fit: cover").
+.contatti-foto {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 329 / 364;
+
+  @include da-desktop {
+    flex: 1;
+    aspect-ratio: auto;
+    min-height: 15rem;
+  }
+}
+
+// La foto riempie il riquadro; "object-position" decide quale zona resta visibile (come in Figma)
+.contatti-foto__immagine {
+  position: absolute;
+  inset: 0;
+  display: block;
+  max-width: none; // Bootstrap (img-fluid) metterebbe max-width: 100%
+  width: 100%;
+  height: 100%; // senza questa riga l'attributo height="..." dell'HTML bloccherebbe l'altezza
+  object-fit: cover;
+  object-position: 50% 38%;
+
+  @include da-desktop {
+    object-position: 50% 57%;
+  }
+}
+
+// Luogo e LinkedIn uno sotto l'altro (Flexbox in colonna), 8px di spazio
+.contatti-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.contatti-info__luogo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem; // 8px tra icona e testo
+
+  img {
+    flex-shrink: 0;
+  }
+}
+
+// --- Scheda con il modulo ---
+// I campi (.campo, .campo-label, .campo-input, .campo-errore) sono componenti in _componenti.scss.
+.modulo {
+  // Contenitore per le "container query": i campi guardano la larghezza del modulo (vedi @container in _componenti.scss)
+  container: modulo / inline-size;
+  display: flex;
+  flex-direction: column;
+  // Niente gap: la distanza tra i campi la dà il padding di .campo (vedi _componenti.scss), così gli errori non spostano nulla.
+  gap: 0;
+
+  // Area di testo: alta 160px come in Figma (e ridimensionabile solo in altezza, vedi _componenti.scss)
+  textarea.form-control.campo-input {
+    min-height: 10rem;
+  }
+
+  // Bottone: su mobile a tutta larghezza, da desktop largo quanto il testo e a sinistra
+  .btn {
+    align-self: stretch;
+
+    @include da-desktop {
+      align-self: flex-start;
+    }
+  }
+
+  .esito-invio {
+    margin: 1.5rem 0 0; // 24px sotto il bottone
+  }
+}

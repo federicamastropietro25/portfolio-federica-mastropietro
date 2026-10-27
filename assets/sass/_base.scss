@@ -1,0 +1,146 @@
+// BASE: qui metto il reset e gli stili dei tag HTML (la tipografia). Vale per tutte le pagine.
+@use "variabili" as *;
+
+// =============================================================
+// RESET: azzero margini e padding, così il sito si vede uguale su tutti i browser
+// =============================================================
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// =============================================================
+// TIPOGRAFIA: parto dal mobile, poi da 768px passo agli stili desktop
+// =============================================================
+body {
+  font-family: $font-principale;
+  color: $colore-testo;
+  background-color: $colore-sfondo;
+  @include stile-testo($body-mobile);
+
+  @include da-desktop {
+    @include stile-testo($body-desktop);
+  }
+}
+
+// Bootstrap (che carico prima) dà ai tag dei margini suoi: qui li azzero io.
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: $font-principale;
+  color: $colore-titoli;
+}
+
+// TITOLI FLUIDI: dimensione e interlinea crescono piano piano da 393px (valori mobile di Figma) a 1112px (valori desktop),
+// invece di cambiare di colpo a 768px (funzione "fluido" in _variabili.scss).
+h1 {
+  @include stile-testo-fluido($h1-mobile, $h1-desktop);
+}
+
+h2 {
+  @include stile-testo-fluido($h2-mobile, $h2-desktop);
+}
+
+h3 {
+  @include stile-testo-fluido($h3-mobile, $h3-desktop);
+}
+
+// =============================================================
+// CLASSI PER GLI STILI DI TESTO CHE NON SONO UN TAG
+// =============================================================
+
+// Titolo grande della hero (su mobile uso lo stile dell'H1)
+.titolo-hero {
+  color: $colore-titoli;
+  @include stile-testo-fluido($h1-mobile, $h1-hero-desktop);
+}
+
+// H3 piccolo
+.titolo-3-piccolo {
+  color: $colore-titoli;
+  @include stile-testo-fluido($h3-piccolo-mobile, $h3-piccolo-desktop);
+}
+
+// Testo grande (in Figma c'è solo su desktop: su mobile resta uguale al testo normale)
+.testo-grande {
+  @include stile-testo-fluido($body-mobile, $body-large-desktop);
+}
+
+// Testo piccolo
+.testo-piccolo {
+  @include stile-testo($body-small-mobile);
+
+  @include da-desktop {
+    @include stile-testo($body-small-desktop);
+  }
+}
+
+// Didascalia
+.didascalia {
+  @include stile-testo($caption-mobile);
+
+  @include da-desktop {
+    @include stile-testo($caption-desktop);
+  }
+}
+
+// =============================================================
+// ACCESSIBILITÀ: se qualcuno ha disattivato le animazioni nel suo sistema, qui le tolgo
+// =============================================================
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// =============================================================
+// SCORRIMENTO: quando clicco un'ancora (es. "torna su") la pagina scorre in modo morbido.
+// Con prefers-reduced-motion si disattiva (regola qui sopra).
+// scroll-padding-top: così le ancore non finiscono sotto la barra fissa (80px mobile, 120px desktop).
+// =============================================================
+html {
+  // Riservo sempre lo spazio della barra di scorrimento: se sparisse (per esempio con il menu aperto) i contenuti si sposterebbero.
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+
+  @include da-desktop {
+    scroll-padding-top: 8rem;
+  }
+}
+
+// =============================================================
+// TESTI DIVERSI TRA MOBILE E DESKTOP
+// In alcune pagine il testo su mobile è più corto. Scrivo nell'HTML tutte e due le versioni e il CSS ne mostra una sola:
+// <span class="testo-mobile">testo corto</span><span class="testo-desktop">testo lungo</span>
+// (con display: none il testo nascosto non viene letto neanche dagli screen reader)
+// =============================================================
+.testo-desktop {
+  display: none;
+}
+
+@include da-desktop {
+  .testo-mobile {
+    display: none;
+  }
+
+  .testo-desktop {
+    display: inline;
+  }
+}

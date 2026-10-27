@@ -1,0 +1,436 @@
+// CV: introduzione con foto e presentazione, poi formazione ed esperienze (linee del tempo) e competenze.
+// Le colonne le decide la griglia di Bootstrap; dentro le colonne dispongo tutto io con Flexbox e CSS Grid.
+@use "../variabili" as *;
+
+// =============================================================
+// INTRODUZIONE: foto + presentazione
+// Mobile: foto quadrata centrata, poi nome, ruolo, testo, informazioni e bottone, tutto centrato.
+// Desktop: foto a sinistra (4 colonne) e presentazione a destra (8 colonne), allineata a sinistra.
+// =============================================================
+.cv-intro {
+  // Spazio tra la barra e il contenuto: da 32px (mobile) a 48px (desktop), cresce piano piano (come nelle altre pagine)
+  padding-top: fluido(2rem, 3rem);
+}
+
+// Riquadro della foto con gli angoli arrotondati.
+
+// Mobile: quadrato che cresce da 174px (393px) a circa 229px (767px), senza salto a 768px. Calcolo: 14.7vw + 116px.
+// Desktop: largo quanto la colonna, con la proporzione di Figma (344 x 408) mantenuta da aspect-ratio.
+.cv-foto {
+  position: relative;
+  width: clamp(10.875rem, calc(14.7vw + 116px), 14.3rem);
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 1rem;
+
+  @include da-desktop {
+    width: 100%;
+    margin-inline: 0;
+    // Da desktop la foto occupa tutta l'altezza della colonna accanto: se il testo si allunga, la foto si allunga con lui.
+    // aspect-ratio è l'altezza minima (la proporzione di Figma, 344 x 408).
+    height: 100%;
+    aspect-ratio: 344 / 408;
+  }
+}
+
+// La foto è più grande del riquadro e spostata, così si vede la zona giusta (come in Figma). Le misure sono in % del riquadro,
+// quindi il ritaglio resta uguale a ogni dimensione. Mobile e desktop hanno un ritaglio un po' diverso, come nel design.
+.cv-foto__immagine {
+  position: absolute;
+  display: block;
+  max-width: none; // Bootstrap (img-fluid) metterebbe max-width: 100%
+  width: 118.05%;
+  height: 157.4%;
+  left: -3.39%;
+  top: -24.23%;
+
+  // Da desktop il riquadro può avere proporzioni diverse (si allunga con il testo): la foto lo riempie senza deformarsi
+  // (object-fit: cover) e la ingrandisco con scale per avere il ritaglio di Figma a 1440px (viso ingrandito del 33,6%).
+  @include da-desktop {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+    object-position: 50% 49%;
+    transform: scale(1.336);
+    transform-origin: 29% 40%;
+  }
+}
+
+.cv-presentazione {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem; // 16px
+  text-align: center;
+
+  @include da-desktop {
+    align-items: flex-start;
+    gap: 1.5rem; // 24px
+    text-align: left;
+  }
+
+  // Il testo di presentazione: su mobile largo da 309px (come in Figma) fino a circa 490px, poi libero
+  >p {
+    margin: 0;
+    max-width: clamp(19.3125rem, calc(48.4vw + 119px), 30.625rem);
+
+    @include da-desktop {
+      max-width: none;
+    }
+  }
+
+  // Bottone "Scarica il mio CV": su mobile a tutta larghezza, da desktop largo quanto il testo
+  .btn {
+    align-self: stretch;
+    margin-top: 0.5rem; // 16px del gap + 8px = 24px sopra il bottone
+
+    @include da-desktop {
+      align-self: flex-start;
+      margin-top: 0;
+    }
+  }
+}
+
+// Nome e ruolo (8px di distanza)
+.cv-presentazione__nome {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+// Il ruolo ha lo stile del titolo H2 (28/40 su mobile, 39/48 su desktop), ma non è un titolo di sezione
+.cv-ruolo {
+  margin: 0;
+  color: $colore-titoli;
+  @include stile-testo-fluido($h2-mobile, $h2-desktop);
+}
+
+// Informazioni: luogo, disponibilità e profilo LinkedIn. Mobile: una sotto l'altra e centrate; desktop: in riga.
+.cv-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem; // 8px
+  margin: 0;
+  padding: 0;
+
+  @include da-desktop {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem; // 16px
+  }
+}
+
+// =============================================================
+// CORPO DEL CV: una colonna su mobile, due colonne da desktop
+// - Mobile: una colonna sola, prima formazione ed esperienze e poi le competenze, tutto centrato.
+// - Desktop (768px): due colonne come in Figma (344px + 712px), competenze a sinistra, formazione ed esperienze a destra.
+// =============================================================
+.cv-corpo {
+  // Spazio tra l'introduzione e il corpo: da 64px a 80px
+  padding-top: fluido(4rem, 5rem);
+}
+
+.cv-corpo__griglia {
+  display: grid;
+  gap: 4rem; // 64px tra i blocchi quando sono una colonna sola
+}
+
+// Una colonna con più blocchi uno sotto l'altro (Flexbox in colonna), 64px tra un blocco e l'altro
+.cv-colonna {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem; // 64px
+}
+
+// Colonna delle competenze: più spazio tra i blocchi (da 64px a 96px) e titoli con più aria sotto (da 24px a 32px)
+.cv-colonna--laterale {
+  gap: fluido(4rem, 6rem);
+  // Con container-type cambio le etichette in base alla larghezza della colonna e non della finestra (vedi @container in fondo)
+  container-type: inline-size;
+
+  .cv-titolo {
+    margin-bottom: fluido(1.5rem, 2rem);
+  }
+}
+
+// Titolo di blocco (es. "Formazione"): centrato quando c'è una colonna sola, a sinistra con due colonne (vedi in fondo al file)
+.cv-titolo {
+  margin-bottom: 1.5rem; // 24px
+  text-align: center;
+}
+
+// Etichette (Hard Skills e Soft Skills), centrate (a sinistra con due colonne).
+// Spazio tra le etichette (--spazio) e padding laterale crescono con la larghezza della colonna (unità cqw): 8px e 12px
+// a 229px, 16px e 16px da 344px (come in Figma). Se la colonna è sotto i 264px le etichette vanno una per riga
+// (vedi @container in fondo), così non resta mai un'etichetta sola in mezzo a righe da due. Calcolo: spazio = 6.96cqw - 7.9px, padding = 3.48cqw + 4px.
+.cv-tag {
+  --spazio: 1rem;
+  --spazio: clamp(0.5rem, calc(6.96cqw - 7.9px), 1rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spazio);
+  margin: 0;
+  padding: 0;
+
+  .badge-tag {
+    padding-inline: 1rem;
+    padding-inline: clamp(0.75rem, calc(3.48cqw + 4px), 1rem);
+  }
+}
+
+// =============================================================
+// =============================================================
+// LINEE DEL TEMPO (Formazione ed Esperienze complementari)
+// Struttura: <ol class="timeline-cv"><li class="voce-cv"><h3 class="voce-cv__titolo">…</h3><p class="voce-cv__data">…</p><ul class="voce-cv__elenco">…</ul></li>…</ol>
+// Disegno con pseudo-elementi, senza immagini: .voce-cv::before = pallino, .timeline-cv::before = linea verticale.
+// Il rientro del testo (e quindi pallini e linea) cresce piano piano da 32px a 48px.
+// =============================================================
+.timeline-cv {
+  --rientro: #{fluido(2rem, 3rem)};
+  position: relative;
+  display: grid;
+  gap: fluido(1.5rem, 1rem); // 24px su mobile, 16px su desktop
+  margin: 0;
+  padding: 0 0 0 var(--rientro);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0.6875rem; // 11px: la linea (2px) sta al centro dei pallini da 24px
+    top: 1rem;
+    bottom: 1rem;
+    width: 2px;
+    background-color: $primario-400;
+  }
+}
+.voce-cv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // 8px tra titolo, data ed elenco
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 1; // sopra la linea
+    left: calc(var(--rientro) * -1);
+    top: 0.25rem; // 4px: il centro del pallino è a 16px, come il centro della riga del titolo
+    width: 1.5rem; // 24px
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: $primario-400;
+  }
+}
+
+.voce-cv__titolo {
+  margin: 0;
+  color: $colore-testo;
+  @include stile-testo-fluido($h3-piccolo-mobile, $h3-piccolo-desktop);
+}
+
+.voce-cv__data {
+  margin: 0;
+  font-style: italic; // il corsivo 400 è caricato da Google Fonts solo in questa pagina
+}
+
+.voce-cv__elenco {
+  margin: 0;
+  padding: 0 0 0 1.5rem; // 24px di rientro per i pallini dell'elenco
+  list-style: disc;
+}
+
+// =============================================================
+// STRUMENTI: icone con etichetta al passaggio del mouse
+// Struttura: <ul class="strumenti"><li class="strumento" tabindex="0" data-nome="Figma"><img …></li>…</ul>
+// L'etichetta non è nell'HTML: la disegna il CSS con ::after (content: attr(data-nome)) e la freccina con ::before.
+// Compare con il mouse e anche con il focus (tocco su telefono o tastiera, grazie a tabindex="0").
+// =============================================================
+.strumenti {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; // centrate (a sinistra con due colonne)
+  gap: 1.5rem; // 24px
+  margin: 0;
+  padding: 0;
+}
+
+.strumento {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem; // 48px (area cliccabile sopra i 44px)
+  height: 3rem;
+  border-radius: $raggio-piccolo;
+
+  img {
+    display: block;
+  }
+
+  // Etichetta con il nome
+  &::after {
+    content: attr(data-nome);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.625rem); // 10px sopra l'icona
+    z-index: 5;
+    padding: 0.25rem 0.5rem;
+    border-radius: $raggio-piccolo;
+    background-color: $colore-testo;
+    color: $neutro-50;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: $peso-medium;
+    white-space: nowrap;
+    pointer-events: none; // l'etichetta non intercetta il mouse
+    // stato nascosto: trasparente e un po' più in basso
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 0.25rem);
+    transition: opacity $transizione, transform $transizione, visibility 0s linear 0.15s;
+  }
+
+  // Freccina sotto l'etichetta (un triangolo fatto con i bordi)
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.25rem); // 4px sopra l'icona
+    z-index: 5;
+    margin-left: -0.375rem;
+    border: 0.375rem solid transparent;
+    border-top-color: $colore-testo;
+    border-bottom-width: 0;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $transizione, visibility 0s linear 0.15s;
+  }
+
+  // Focus da tastiera: anello come per gli altri elementi interattivi
+  &:focus-visible {
+    outline: 0;
+    box-shadow: $focus-anello;
+  }
+
+  // Etichetta visibile con il focus (tocco o tastiera)
+  &:focus::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition-delay: 0s;
+  }
+
+  &:focus::before {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  // Etichetta visibile con il mouse (solo desktop)
+  @include con-hover {
+    &:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+      transition-delay: 0s;
+    }
+
+    &:hover::before {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+  }
+}
+
+// =============================================================
+// LINGUE: elenco con un pallino davanti a ogni riga
+// =============================================================
+.lingue {
+  display: flex;
+  flex-direction: column;
+  width: fit-content; // il blocco è largo quanto il testo, così "margin-inline: auto" lo centra
+  margin: 0 auto;
+  padding: 0;
+
+  li {
+    position: relative;
+    padding-left: 1.5rem; // 24px: pallino da 16px + 8px di spazio
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.25rem; // il centro del pallino è al centro della riga da 24px
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background-color: $primario-400;
+    }
+  }
+}
+
+// Due colonne da desktop (768px). Sta in fondo al file di proposito: così queste regole vengono dopo quelle di base
+// (titoli, etichette, icone e lingue centrati) e le sostituiscono.
+@include da-desktop {
+  .cv-corpo__griglia {
+    // Le due colonne sono larghe come le colonne 4 + 8 di Bootstrap usate dall'introduzione (foto + testo): così il
+    // testo di presentazione e le colonne di formazione ed esperienze partono sempre dalla stessa linea, a ogni larghezza.
+    // La colonna di sinistra è un terzo della riga meno lo spazio tra le colonne (344px a 1440px, come in Figma;
+    // 229px a 768px, dove le competenze si impilano una sotto l'altra).
+    grid-template-columns: calc((100% + 1.5rem) / 3 - 1.5rem) minmax(0, 1fr);
+    column-gap: 1.5rem; // 24px, come lo spazio tra le colonne dell'introduzione
+    row-gap: 0;
+    align-items: start;
+  }
+
+  .cv-corpo__competenze {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .cv-corpo__timeline {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .cv-titolo {
+    text-align: left;
+  }
+
+  .cv-tag {
+    justify-content: flex-start;
+  }
+
+  .strumenti {
+    justify-content: flex-start;
+  }
+
+  .strumenti {
+    max-width: 17.3125rem; // 277px: le icone vanno a capo dopo la quarta
+  }
+
+  .lingue {
+    margin-inline: 0;
+  }
+}
+
+// Colonna delle competenze stretta (sotto i 264px, cioè tra 768px e circa 870px di finestra): le etichette vanno una
+// per riga, allineate a sinistra.
+@container (max-width: 16.5rem) {
+  .cv-tag {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+  }
+}

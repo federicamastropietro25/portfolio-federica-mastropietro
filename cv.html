@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+<head>
+
+  <meta charset="UTF-8">
+  <!-- Viewport: serve perché il telefono mostri la versione mobile e non il desktop rimpicciolito -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- SEO: qui scrivo il title e la description della pagina (diversi da quelli delle altre pagine) -->
+  <title>CV | Federica Mastropietro, UX/UI Designer Portfolio</title>
+  <meta name="description"
+    content="Il mio percorso: formazione, esperienze, hard e soft skills, strumenti e lingue. Scopri chi sono come Junior UX/UI Designer e scarica il mio CV.">
+  <!-- Canonical: l'indirizzo completo di questa pagina su GitHub Pages -->
+  <link rel="canonical" href="https://federicamastropietro25.github.io/portfolio-federica-mastropietro/cv.html">
+
+  <!-- Open Graph: l'anteprima che compare quando condivido il link (uso l'immagine og-image.jpg) -->
+  <meta property="og:title" content="CV | Federica Mastropietro, UX/UI Designer Portfolio">
+  <meta property="og:description"
+    content="Il mio percorso: formazione, esperienze, hard e soft skills, strumenti e lingue. Scopri chi sono come Junior UX/UI Designer e scarica il mio CV.">
+  <meta property="og:image"
+    content="https://federicamastropietro25.github.io/portfolio-federica-mastropietro/assets/immagini/og-image.jpg">
+  <!-- Qui descrivo l'immagine di anteprima, per chi usa uno screen reader -->
+  <meta property="og:image:alt"
+    content="Federica Mastropietro, UX/UI Designer Portfolio: il suo ritratto accanto al nome su sfondo rosa chiaro">
+  <meta property="og:url" content="https://federicamastropietro25.github.io/portfolio-federica-mastropietro/cv.html">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon: i file stanno in assets/favicon -->
+  <!-- 1. Riserva per tutti i browser -->
+  <link rel="icon" href="assets/favicon/favicon.ico" sizes="32x32">
+  <!-- 2. Icona della scheda, nitida a ogni dimensione -->
+  <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+  <!-- 3. Icona per iPhone e iPad (schermata home) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <!-- 4. Manifest: icone 192 e 512 per Android e installazione -->
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
+
+  <!-- Font: carico Plus Jakarta Sans da Google Fonts, con i pesi che uso (400, 500, 600, 700) più il corsivo 400 per le date del CV -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap da CDN: lo collego PRIMA del mio CSS, così i miei stili vincono -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Il mio CSS, compilato da assets/sass/style.scss -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<!-- Metto id="inizio" sul body: è la destinazione del pulsante "torna su" -->
+
+<body id="inizio">
+  <!-- Link per saltare la barra e arrivare subito al contenuto: si vede solo quando navigo con la tastiera -->
+  <a class="visually-hidden-focusable" href="#contenuto">Vai al contenuto</a>
+
+  <!-- Trucco per il menu mobile SENZA JavaScript: una checkbox nascosta ricorda se il menu è aperto (nel CSS uso :checked).
+       La metto FUORI dalla barra sticky: dentro, cliccando l'hamburger il browser farebbe scorrere la pagina. -->
+  <input class="menu-check visually-hidden" type="checkbox" id="menu-toggle" aria-controls="menu-principale"
+    aria-label="Apri o chiudi il menu">
+
+  <!-- ===== BARRA DI NAVIGAZIONE (sticky): qui ho il logo, il menu e il pulsante "Contattami" ===== -->
+  <header class="navigazione">
+    <div class="container">
+      <div class="navigazione__contenuto">
+        <a class="navigazione__logo" href="index.html" title="Federica Mastropietro - Home">
+          <img src="assets/immagini/logo.svg" width="48" height="48" alt="Logo di Federica Mastropietro, vai alla home">
+        </a>
+
+        <!-- Pulsante hamburger: è una label collegata alla checkbox, si vede solo su mobile -->
+        <label class="pulsante-icona pulsante-menu-apri" for="menu-toggle" title="Apri il menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M4 6l16 0" />
+            <path d="M4 12l16 0" />
+            <path d="M4 18l16 0" />
+          </svg>
+        </label>
+
+        <!-- Menu: su mobile lo faccio a tutto schermo con la X in alto a destra; su desktop sta dentro la barra -->
+        <nav class="navigazione__menu" id="menu-principale" aria-label="Navigazione principale">
+          <label class="pulsante-icona pulsante-menu-chiudi" for="menu-toggle" title="Chiudi il menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M18 6l-12 12" />
+              <path d="M6 6l12 12" />
+            </svg>
+          </label>
+          <ul class="navigazione__lista">
+            <li><a class="voce-nav" href="index.html" title="Vai alla pagina Home">Home</a></li>
+            <li><a class="voce-nav" href="chi-sono.html" title="Vai alla pagina Chi sono">Chi sono</a></li>
+            <li><a class="voce-nav" href="portfolio.html" title="Vai alla pagina Portfolio">Portfolio</a></li>
+            <li><a class="voce-nav" href="cv.html" title="Vai alla pagina CV" aria-current="page">CV</a></li>
+            <!-- "Contattami": su mobile è un link semplice, su desktop un bottone. Scrivo due voci e il CSS ne mostra una sola -->
+            <li class="solo-mobile"><a class="voce-nav" href="contatti.html"
+                title="Vai alla pagina Contatti">Contattami</a></li>
+            <li class="solo-desktop"><a class="btn bottone-primario" href="contatti.html"
+                title="Vai alla pagina Contatti">Contattami</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- ===== CONTENUTO PRINCIPALE (un solo main per pagina) ===== -->
+  <main id="contenuto">
+
+    <!-- INTRODUZIONE: foto a sinistra (4 colonne su 12) e presentazione a destra (8 colonne) da desktop; su mobile
+         una sotto l'altra. Le colonne sono di Bootstrap, la disposizione dentro le colonne la scrivo io con Flexbox -->
+    <section class="cv-intro" aria-labelledby="titolo-cv">
+      <div class="container">
+        <div class="row gy-3">
+          <div class="col-12 col-md-4">
+            <!-- Foto: la stessa immagine ritagliata in modo diverso su mobile e desktop (lo faccio nel CSS) -->
+            <div class="cv-foto">
+              <img class="img-fluid cv-foto__immagine" src="assets/immagini/cv-ritratto-480.webp"
+                srcset="assets/immagini/cv-ritratto-480.webp 480w, assets/immagini/cv-ritratto-960.webp 960w"
+                sizes="(min-width: 768px) 460px, 270px" width="480" height="640"
+                alt="Ritratto di Federica Mastropietro, seduta all'aperto in un parco" fetchpriority="high">
+            </div>
+          </div>
+
+          <div class="col-12 col-md-8">
+            <div class="cv-presentazione">
+              <div class="cv-presentazione__nome">
+                <!-- Su mobile il nome va a capo dopo "Federica" (come nel design) -->
+                <h1 id="titolo-cv">Federica <span class="testo-mobile"><br></span>Mastropietro</h1>
+                <p class="cv-ruolo">Junior UX/UI Designer</p>
+              </div>
+              <p class="testo-grande">Un percorso non lineare e un background eterogeneo mi hanno insegnato la
+                resilienza e la flessibilità ai cambiamenti. Metto l'empatia e la creatività al servizio di
+                esperienze utente intuitive, costruite attraverso l'ascolto e la forza dello storytelling.</p>
+              <ul class="cv-info list-unstyled">
+                <li class="badge-tag">Reggio Emilia, Italia</li>
+                <li class="badge-tag">Disponibile da remoto</li>
+                <li>
+                  <!-- Link al mio profilo LinkedIn: icona SVG scritta qui (così il CSS ne cambia il colore) -->
+                  <a class="link-profilo" href="https://www.linkedin.com/in/federica-mastropietro/" target="_blank"
+                    rel="noopener noreferrer" aria-label="Profilo LinkedIn (si apre in una nuova scheda)"
+                    title="Profilo LinkedIn (si apre in una nuova scheda)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                      <path d="M8 11l0 5" />
+                      <path d="M8 8l0 .01" />
+                      <path d="M12 16l0 -5" />
+                      <path d="M16 16v-3a2 2 0 0 0 -4 0" />
+                    </svg>
+                    in/federica-mastropietro
+                  </a>
+                </li>
+              </ul>
+              <a class="btn bottone-primario" href="assets/pdf/cv-federica-mastropietro.pdf" download
+                title="Scarica il mio CV in PDF">Scarica il mio CV</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CORPO DEL CV: la colonna è di Bootstrap (col-12); dentro dispongo io con CSS Grid. Mobile: una colonna sola, tutta centrata.
+         Da desktop due colonne (competenze a sinistra, formazione ed esperienze a destra, con grid-column) larghe come quelle dell'introduzione. -->
+    <section class="cv-corpo sezione--finale" aria-label="Formazione, esperienze e competenze">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 cv-corpo__contenitore">
+            <div class="cv-corpo__griglia">
+
+              <!-- Formazione ed esperienze complementari, come linee del tempo -->
+              <div class="cv-colonna cv-corpo__timeline">
+                <section aria-labelledby="titolo-formazione">
+                  <h2 class="cv-titolo" id="titolo-formazione">Formazione</h2>
+                  <ol class="timeline-cv list-unstyled">
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Master in UX/UI Design | start2impact</h3>
+                      <p class="voce-cv__data">Dicembre 2024 - in corso</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Focus su ricerca, prototipazione e Design Systems</li>
+                        <li>Sviluppo di progetti pratici basati su brief reali</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Comunicazione, tecnologie e culture digitali | La Sapienza, Roma</h3>
+                      <p class="voce-cv__data">Settembre 2020 - 2023</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Media digitali, sociologia e comunicazione</li>
+                        <li>Conclusione anticipata per focalizzazione sulla carriera in UX/UI Design</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Design degli Interni | Politecnico di Milano</h3>
+                      <p class="voce-cv__data">Settembre 2019 - Settembre 2020</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Progettazione dello spazio, ergonomia e composizione visiva</li>
+                        <li>Trasferimento alla Sapienza per approfondire le dinamiche della comunicazione digitale</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Diploma liceo scientifico | Liceo scientifico Ariosto-Spallanzani,
+                        Reggio Emilia</h3>
+                      <p class="voce-cv__data">2014 - 2019</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Cultura generale</li>
+                      </ul>
+                    </li>
+                  </ol>
+                </section>
+
+                <section aria-labelledby="titolo-esperienze">
+                  <h2 class="cv-titolo" id="titolo-esperienze">Esperienze complementari</h2>
+                  <ol class="timeline-cv list-unstyled">
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Corso fotografia base | Digital Camera School</h3>
+                      <p class="voce-cv__data">Ottobre 2023 - Novembre 2023</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Tecnica fotografica e composizione visiva.</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Ufficio Marketing + IT | Seds Sapienza, Roma</h3>
+                      <p class="voce-cv__data">2022-2023</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Gestione dei canali social e realizzazione di asset grafici per la comunicazione
+                          istituzionale.</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Ciceroni FAI, Reggio Emilia</h3>
+                      <p class="voce-cv__data">2017-2019</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Public speaking: guida alla scoperta del patrimonio storico-artistico locale durante le
+                          Giornate FAI</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Barista | Cafe Coho, Brighton, Inghilterra</h3>
+                      <p class="voce-cv__data">Luglio 2017 - Agosto 2017</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Gestione delle dinamiche di gruppo e del servizio al cliente in un ambiente frenetico e
+                          multiculturale</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Studio Associato Mastropietro-Natale-Nironi Commercialisti, Reggio
+                        Emilia</h3>
+                      <p class="voce-cv__data">Giugno 2017 - Luglio 2017</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Gestione e archiviazione di documenti fiscali.</li>
+                      </ul>
+                    </li>
+                    <li class="voce-cv">
+                      <h3 class="voce-cv__titolo">Customer Assistant | Douglas, Reggio Emilia</h3>
+                      <p class="voce-cv__data">Dicembre 2017</p>
+                      <ul class="voce-cv__elenco">
+                        <li>Gestione del packaging e presentazione estetica del prodotto</li>
+                      </ul>
+                    </li>
+                  </ol>
+                </section>
+              </div>
+
+              <!-- Competenze: hard skills, soft skills, strumenti e lingue -->
+              <div class="cv-colonna cv-colonna--laterale cv-corpo__competenze">
+                <section aria-labelledby="titolo-hard">
+                  <h2 class="cv-titolo" id="titolo-hard">Hard Skills</h2>
+                  <ul class="cv-tag list-unstyled">
+                    <li class="badge-tag">Graphic</li>
+                    <li class="badge-tag">Wireframing</li>
+                    <li class="badge-tag">UI Prototyping</li>
+                    <li class="badge-tag">UX Research</li>
+                    <li class="badge-tag">Copywriting</li>
+                    <li class="badge-tag">HTML e CSS</li>
+                  </ul>
+                </section>
+
+                <section aria-labelledby="titolo-soft">
+                  <h2 class="cv-titolo" id="titolo-soft">Soft Skills</h2>
+                  <ul class="cv-tag list-unstyled">
+                    <li class="badge-tag">Teamwork</li>
+                    <li class="badge-tag">Design Thinking</li>
+                    <li class="badge-tag">Problem Solving</li>
+                    <li class="badge-tag">Creativity</li>
+                    <li class="badge-tag">People Oriented</li>
+                    <li class="badge-tag">Precision</li>
+                    <li class="badge-tag">Networking</li>
+                  </ul>
+                </section>
+
+                <!-- Strumenti: ogni icona ha un'etichetta con il nome (con mouse, tocco o tastiera) disegnata dal CSS leggendo data-nome.
+                     Il nome è anche nell'alt dell'immagine -->
+                <section aria-labelledby="titolo-strumenti">
+                  <h2 class="cv-titolo" id="titolo-strumenti">Strumenti</h2>
+                  <ul class="strumenti list-unstyled">
+                    <li class="strumento" tabindex="0" data-nome="Figma">
+                      <img src="assets/immagini/strumento-figma-104.webp" width="26" height="40" alt="Figma">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="Canva">
+                      <img src="assets/icone/strumento-canva.svg" width="48" height="15" alt="Canva">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="Visual Studio Code">
+                      <img src="assets/icone/strumento-vscode.svg" width="35" height="35" alt="Visual Studio Code">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="AI Tools">
+                      <img src="assets/icone/strumento-gemini.svg" width="48" height="48" alt="AI Tools">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="Photoshop">
+                      <img src="assets/icone/strumento-photoshop.svg" width="48" height="48" alt="Adobe Photoshop">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="Lightroom">
+                      <img src="assets/icone/strumento-lightroom.svg" width="48" height="48" alt="Adobe Lightroom">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="Illustrator">
+                      <img src="assets/icone/strumento-illustrator.svg" width="48" height="48" alt="Adobe Illustrator">
+                    </li>
+                    <li class="strumento" tabindex="0" data-nome="InDesign">
+                      <img src="assets/icone/strumento-indesign.svg" width="43" height="42" alt="Adobe InDesign">
+                    </li>
+                  </ul>
+                </section>
+
+                <section aria-labelledby="titolo-lingue">
+                  <h2 class="cv-titolo" id="titolo-lingue">Lingue</h2>
+                  <ul class="lingue list-unstyled">
+                    <li>Italiano: Madrelingua</li>
+                    <li>Inglese: Avanzato</li>
+                    <li>Spagnolo: Elementare</li>
+                  </ul>
+                </section>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER: logo, contatti, social e copyright. Con la griglia di Bootstrap metto il logo (6 colonne) a sinistra
+       e i contatti (6 colonne) a destra; il copyright sta su una riga intera. Su mobile è tutto in colonna. ===== -->
+  <footer class="footer-sito">
+    <div class="container">
+      <div class="row footer-sito__riga">
+        <div class="col-12 col-md-6">
+          <a class="footer-sito__logo" href="index.html" title="Federica Mastropietro - Home">
+            <img src="assets/immagini/logo.svg" width="72" height="72"
+              alt="Logo di Federica Mastropietro, vai alla home">
+          </a>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="footer-sito__contatti">
+            <a class="link-footer" href="contatti.html" title="Vai alla pagina Contatti">Contattami</a>
+            <!-- Icone social: sono SVG scritti qui nell'HTML (così il CSS ne cambia colore e dimensione);
+                 si comportano tutte allo stesso modo e si aprono in una nuova scheda -->
+            <ul class="footer-sito__social">
+              <li>
+                <a class="icona-social" href="https://www.linkedin.com/in/federica-mastropietro/" target="_blank"
+                  rel="noopener noreferrer" aria-label="LinkedIn (si apre in una nuova scheda)"
+                  title="LinkedIn (si apre in una nuova scheda)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                    <path d="M8 11l0 5" />
+                    <path d="M8 8l0 .01" />
+                    <path d="M12 16l0 -5" />
+                    <path d="M16 16v-3a2 2 0 0 0 -4 0" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a class="icona-social" href="https://www.behance.net/federicamastropietro" target="_blank"
+                  rel="noopener noreferrer" aria-label="Behance (si apre in una nuova scheda)"
+                  title="Behance (si apre in una nuova scheda)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M3 18v-12h4.5a3 3 0 0 1 0 6a3 3 0 0 1 0 6h-4.5" />
+                    <path d="M3 12l4.5 0" />
+                    <path d="M14 13h7a3.5 3.5 0 0 0 -7 0v2a3.5 3.5 0 0 0 6.64 1" />
+                    <path d="M16 6l3 0" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a class="icona-social" href="https://github.com/federicamastropietro25" target="_blank"
+                  rel="noopener noreferrer" aria-label="GitHub (si apre in una nuova scheda)"
+                  title="GitHub (si apre in una nuova scheda)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path
+                      d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a class="icona-social" href="https://www.instagram.com/federicamastropietro_/" target="_blank"
+                  rel="noopener noreferrer" aria-label="Instagram (si apre in una nuova scheda)"
+                  title="Instagram (si apre in una nuova scheda)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
+                    <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                    <path d="M16.5 7.5l0 .01" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12">
+          <p class="footer-sito__copyright">© 2026 Federica Mastropietro. Tutti i diritti riservati.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Pulsante "torna su": compare dopo che ho scrollato un po', solo con il CSS -->
+
+  <a class="torna-su" href="#inizio" aria-label="Torna all'inizio della pagina" title="Torna su">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 5l0 14" />
+      <path d="M18 11l-6 -6" />
+      <path d="M6 11l6 -6" />
+    </svg>
+  </a>
+</body>
+
+</html>

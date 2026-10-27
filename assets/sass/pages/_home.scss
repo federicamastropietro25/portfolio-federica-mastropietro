@@ -1,0 +1,294 @@
+// HOMEPAGE: la hero e la fascia delle competenze che scorre.
+// (Le sezioni "Metodologia e Valori" e "Progetti in evidenza" usano .sezione, .card-valore e .card-progetto.)
+@use "../variabili" as *;
+
+// =============================================================
+// HERO: badge, foto, titolo, testo e due bottoni
+// Sfondo sfumato da $neutro-100 a $primario-100 (la barra fissa ha lo stesso colore in alto).
+
+// Colonne di Bootstrap: testo e foto da col-md-6. Desktop: foto a tutta altezza (614px); badge e testo centrati in verticale con la Grid
+// e alzati di 60px (come in Figma). Mobile: tutto in colonna e centrato (badge, foto 256x256, testo): per mettere la foto in mezzo
+// uso display: contents sulla colonna del testo e sul suo blocco, e ordino i figli con order.
+// =============================================================
+.hero {
+  background: linear-gradient(to bottom, $neutro-100 44.3%, $primario-100);
+
+  @include da-desktop {
+    background: linear-gradient(to bottom, $neutro-100 38.4%, $primario-100);
+  }
+
+  .container {
+    padding-block: 2rem 3rem; // mobile: 32px sopra (tra barra e badge), 48px sotto
+
+    @include da-desktop {
+      padding-block: 0;
+    }
+  }
+}
+
+.hero__riga {
+  --bs-gutter-y: 1.5rem; // 24px tra badge, foto e testo su mobile
+
+  @include da-desktop {
+    --bs-gutter-y: 0; // le colonne sono affiancate: nessuno spazio verticale (e nessun margine negativo sulla riga)
+    // Non metto un'altezza fissa: l'altezza della hero la decide la foto, che si ridimensiona insieme alla colonna
+    // (vedi .hero__figura). A schermo largo la foto è 528x614, quindi la hero è alta 614px come in Figma.
+  }
+}
+
+// Con display: contents la scatola "sparisce" e i figli stanno direttamente nella riga di Bootstrap.
+// Su mobile mi serve per mettere la foto tra il badge e il testo. Su desktop la scatola torna normale (vedi qui sotto).
+.hero__colonna-testo,
+.hero__blocco {
+  display: contents; // mobile: i figli diventano elementi della riga
+}
+
+@include da-desktop {
+  .hero__colonna-testo {
+    display: block;
+  }
+
+  .hero__blocco {
+    // CSS Grid: badge e testo uno sotto l'altro, centrati in verticale nella colonna
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 1.5rem; // 24px tra badge e testo
+    height: 100%;
+    // Spazio sotto il blocco: alza il testo per centrarlo come in Figma. 120px a schermo largo, scende fino a 0 a 768px
+    // con clamp(minimo, valore, massimo) e la larghezza della finestra (vw).
+    padding-bottom: clamp(0px, calc((100vw - 48rem) * 0.35), $navigazione-padding-sopra + $navigazione-padding-sotto + 3rem);
+  }
+}
+
+// Su mobile i figli della riga (dentro display: contents) devono comportarsi da colonne a tutta larghezza, come le colonne di Bootstrap:
+// var(--bs-gutter-x) è lo spazio tra le colonne e ne prendo la metà con calc(). order: 1 = badge, 2 = foto, 3 = testo.
+.hero__badge-contenitore,
+.hero__testo {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: var(--bs-gutter-y);
+  padding-inline: calc(var(--bs-gutter-x) * 0.5);
+
+  @include da-desktop {
+    width: auto;
+    margin-top: 0;
+    padding-inline: 0;
+  }
+}
+
+.hero__badge-contenitore {
+  order: 1;
+  text-align: center;
+
+  @include da-desktop {
+    order: 0;
+    text-align: left;
+  }
+}
+
+.hero__colonna-foto {
+  order: 2;
+
+  @include da-desktop {
+    order: 0;
+    align-self: flex-end; // la foto sta sempre appoggiata in basso, a contatto con la fascia delle competenze
+  }
+}
+
+// Il pallino • tra nome e città (il badge è un contenitore flex: gli spazi si perdono, quindi li do con il margine)
+.hero__separatore {
+  margin-inline: 0.625rem; // 10px (in Figma 3 spazi)
+
+  @include da-desktop {
+    margin-inline: 0.25rem; // 4px (in Figma 1 spazio)
+  }
+}
+
+.hero__figura {
+  position: relative;
+  display: block;
+  // Mobile: quadrato che cresce da 256px (393px) a 349px (767px), così a 768px, quando la foto riempie la colonna, non c'è salto. Calcolo: 24.87vw + 158.2px.
+  width: clamp(16rem, calc(24.87vw + 158.2px), 21.8125rem);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+
+  @include da-desktop {
+    width: 100%; // larga come la colonna
+    height: auto;
+    // aspect-ratio mantiene la proporzione di Figma (528x614): se la colonna si restringe la figura si rimpicciolisce senza spostarsi
+    aspect-ratio: 528 / 614;
+    margin-inline: 0;
+    overflow: hidden; // la parte della foto che sporge in alto (trasparente) viene tagliata
+  }
+}
+
+// L'immagine sta dentro la figura e non ne decide l'altezza, così su desktop la hero resta alta 614px come in Figma.
+// - Mobile: la foto 3:4 è ritagliata al centro in un quadrato (object-fit: cover).
+// - Desktop: la foto prende tutta la larghezza della colonna e sta in basso, quindi non si taglia ai lati (neanche sui tablet);
+//   se la colonna è più alta resta spazio trasparente in alto.
+.hero__immagine {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+
+  @include da-desktop {
+    top: auto; // la foto parte dal basso della colonna, non dall'alto
+    height: auto; // altezza proporzionale alla larghezza
+  }
+}
+
+.hero__testo {
+  order: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; // 40px tra testo e bottoni
+  text-align: center;
+
+  @include da-desktop {
+    order: 0;
+    gap: 2rem; // 32px
+    max-width: 28.375rem; // 454px
+    text-align: left;
+  }
+}
+
+.hero__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // 16px
+
+  @include da-desktop {
+    gap: 1.5rem; // 24px
+  }
+
+  h1,
+  p {
+    margin: 0;
+  }
+
+  p {
+    @include da-desktop {
+      max-width: 25.25rem; // 404px
+    }
+  }
+}
+
+.hero__azioni {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // 8px
+  // Mobile: bottoni a tutta larghezza (o fino al limite impostato in $bottone-larghezza-max-mobile) e centrati
+  width: 100%;
+  max-width: $bottone-larghezza-max-mobile;
+  margin-inline: auto;
+
+  @include da-desktop {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem; // 24px
+    width: auto;
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+// =============================================================
+// FASCIA DELLE COMPETENZE CHE SCORRE (sotto la hero)
+// Le voci scorrono da destra a sinistra con il solo CSS. Scrivo la lista due volte (la seconda con aria-hidden) per far
+// ripartire l'animazione senza stacchi. Su desktop si ferma con il mouse sopra (su mobile tenendo premuto);
+// con "riduci animazioni" non scorre: le voci restano ferme, vanno a capo e sono centrate.
+// =============================================================
+.fascia-competenze {
+  overflow: hidden;
+  background-color: $primario-100;
+  color: $colore-testo;
+}
+
+.fascia-competenze__pista {
+  display: flex;
+  width: max-content;
+  animation: scorri-competenze 40s linear infinite;
+}
+
+.fascia-competenze__lista {
+  // Distanza tra una parola e il pallino, uguale da entrambi i lati: 32px su mobile, 48px su desktop
+  // (in Figma: voce con padding + spazio di 16px su mobile, 8px + 40px su desktop)
+  --spazio-voci: 2rem;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--spazio-voci); // dal pallino alla parola successiva
+  height: 3.75rem; // 60px
+  margin: 0;
+  padding: 0 var(--spazio-voci) 0 0; // a destra lo stesso spazio: il giro delle voci si chiude senza stacchi
+  list-style: none;
+
+  @include da-desktop {
+    --spazio-voci: 3rem;
+    height: 5rem; // 80px
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    @include stile-testo($body-mobile);
+
+    @include da-desktop {
+      @include stile-testo($body-large-desktop);
+    }
+  }
+
+  // Il pallino • dopo ogni voce (è decorativo: gli screen reader lo ignorano)
+  li::after {
+    content: "•";
+    content: "•" / "";
+    margin-left: var(--spazio-voci); // dalla parola al pallino
+    @include stile-testo($body-small-mobile);
+
+    @include da-desktop {
+      @include stile-testo($body-small-desktop);
+    }
+  }
+}
+
+@keyframes scorri-competenze {
+  to {
+    transform: translateX(-50%); // metà della pista = una lista intera
+  }
+}
+
+// Pausa: quando ci passo sopra con il mouse (solo desktop) o tengo premuto
+@include con-hover {
+  .fascia-competenze:hover .fascia-competenze__pista {
+    animation-play-state: paused;
+  }
+}
+
+.fascia-competenze:active .fascia-competenze__pista {
+  animation-play-state: paused;
+}
+
+// Per chi ha disattivato le animazioni: voci ferme, a capo e centrate
+@media (prefers-reduced-motion: reduce) {
+  .fascia-competenze__pista {
+    width: auto;
+    animation: none;
+  }
+
+  .fascia-competenze__lista {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: auto;
+    padding: 1rem;
+  }
+
+  .fascia-competenze__lista[aria-hidden="true"] {
+    display: none;
+  }
+}

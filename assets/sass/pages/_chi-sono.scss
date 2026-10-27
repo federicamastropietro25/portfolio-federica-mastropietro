@@ -1,0 +1,458 @@
+// CHI SONO: introduzione con foto, "Di cosa mi occupo" (usa .card-valore), processo, "Oltre il Design" e invito finale.
+// Le colonne le decide la griglia di Bootstrap; dentro le colonne dispongo tutto io con Flexbox e CSS Grid.
+@use "../variabili" as *;
+
+// =============================================================
+// INTRODUZIONE: foto + titolo + testo
+// Mobile: foto sopra, testo sotto, tutto centrato (Flexbox in colonna). Desktop: foto a sinistra e testo a destra (Flexbox in riga).
+// =============================================================
+.chi-sono-intro {
+  // Spazio tra la barra e la foto: da 32px (mobile) a 48px (desktop), cresce piano piano
+  padding-top: fluido(2rem, 3rem);
+}
+
+.intro-profilo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; // 24px
+  text-align: center;
+
+  @include da-desktop {
+    flex-direction: row;
+    gap: 3rem; // 48px
+    text-align: left;
+  }
+}
+
+// Riquadro quadrato con gli angoli arrotondati: da 174px (mobile) a 248px (desktop) in modo fluido.
+// "aspect-ratio: 1" lo tiene sempre quadrato. "overflow: hidden" taglia la parte della foto che esce dal riquadro.
+.intro-profilo__foto {
+  position: relative;
+  flex-shrink: 0;
+  width: fluido(10.875rem, 15.5rem);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 1rem;
+  // Con container-type nella foto posso usare l'unità cqw (1% della larghezza del riquadro): il ritaglio segue la sua grandezza.
+  container-type: inline-size;
+}
+
+// La foto è più grande del riquadro e spostata, così si vede solo il viso (come in Figma). Il ritaglio mobile (riquadro 174px)
+// e desktop (248px) è un po' diverso: lo faccio cambiare piano piano con la grandezza del riquadro. "100cqw" è la larghezza
+// del riquadro; ogni formula è "A cqw + B px" e dà i valori di Figma ai due estremi. Le misure in % sono per i browser senza cqw.
+.intro-profilo__immagine {
+  position: absolute;
+  display: block;
+  max-width: none; // Bootstrap (img-fluid) metterebbe max-width: 100%
+  width: 135%;
+  height: 180%;
+  left: -30%;
+  top: -32%;
+  width: calc(174.3cqw - 76.1px);
+  height: calc(232.4cqw - 101.5px);
+  left: calc(50.5px - 55.7cqw);
+  top: calc(98px - 81.1cqw);
+}
+
+// =============================================================
+// DI COSA MI OCCUPO: quattro card
+// Struttura: <div class="competenze"><ul class="competenze__lista"><li><div class="card-valore card-valore--centrata">…</div></li>…</ul></div>
+// CSS Grid: 2 card per riga; con almeno 864px di larghezza ne stanno 4. Uso @container (come una media query, ma guarda la
+// larghezza di .competenze e non della finestra), così le card non diventano mai troppo strette.
+// =============================================================
+.competenze {
+  container-type: inline-size;
+}
+
+.competenze__lista {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; // 16px
+
+  @include da-desktop {
+    gap: 1.5rem; // 24px
+  }
+
+  li {
+    min-width: 0; // permette alla colonna di restringersi senza che il contenuto la allarghi
+  }
+}
+
+@container (min-width: 54rem) {
+  .competenze__lista {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.intro-profilo__testi {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; // 24px tra titolo e testo
+  // Su mobile il testo è stretto e centrato: la larghezza cresce da 326px (393px) a circa 477px (768px), senza salti. Calcolo: 40.27vw + 167.7px.
+  max-width: clamp(20.375rem, calc(40.27vw + 167.7px), 29.8125rem);
+
+  @include da-desktop {
+    gap: 1rem; // 16px
+    max-width: none;
+  }
+
+  p {
+    max-width: 48.4375rem; // 775px: il testo non diventa troppo largo
+  }
+}
+
+// =============================================================
+// PROCESSO: linea del tempo con quattro passi
+// Il disegno è fatto con pseudo-elementi, senza immagini: .fase::before = pallino, .fase::after = linea verticale fino al
+// pallino successivo, .fase__titolo::before = trattino che collega pallino e testo.
+// Mobile: linea a sinistra e passi uno sotto l'altro. Desktop: CSS Grid a due colonne con la linea al centro, passi alternati.
+// =============================================================
+.processo {
+  // Spazio vuoto in mezzo alle due colonne (dove sta la linea): da 64px a 160px in modo fluido.
+  // Lo metto in una variabile CSS (--spazio-colonne) per riusarlo nei calcoli dei pallini.
+  --spazio-colonne: #{fluido(4rem, 10rem)};
+  display: grid;
+  gap: 1.5rem; // 24px tra un passo e l'altro
+  max-width: 19.1875rem; // 307px
+  margin-inline: auto;
+
+  @include da-desktop {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--spazio-colonne);
+    row-gap: 0;
+    // Le prime tre righe sono alte almeno 141px (come in Figma) e crescono se il testo è lungo;
+    // l'ultima è alta quanto il suo testo, così sotto non resta spazio in più e la distanza dalla sezione dopo è uguale alle altre
+    grid-template-rows: repeat(3, minmax(8.8125rem, auto)) auto;
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+.fase {
+  position: relative;
+  padding-left: 2.5rem; // 40px: spazio per pallino e trattino
+
+  // Pallino
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 1; // sopra la linea
+    left: 0;
+    top: 0.25rem; // 4px: il centro del pallino è a 16px, come il centro della riga del titolo
+    width: 1.5rem; // 24px
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: $primario-400;
+  }
+
+  // Linea verticale fino al pallino del passo dopo (l'ultimo passo non ce l'ha)
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0.6875rem; // 11px: la linea (2px) è al centro del pallino
+    top: 1rem;
+    width: 2px;
+    height: calc(100% + 1.5rem); // l'altezza del passo + lo spazio fino al passo dopo
+    background-color: $primario-400;
+  }
+
+  &:last-child::after {
+    display: none;
+  }
+}
+
+.fase__titolo {
+  margin: 0 0 0.5rem; // 8px sotto
+  color: $colore-testo;
+  @include stile-testo-fluido($h3-piccolo-mobile, $h3-piccolo-desktop);
+
+  // Trattino orizzontale tra pallino e testo. Il titolo non è "position: relative", quindi il trattino
+  // si posiziona rispetto a .fase.
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0.75rem; // 12px: parte dal centro del pallino
+    top: 0.9375rem; // 15px + metà dei 2px = 16px (centro della riga del titolo)
+    width: 1.5rem; // 24px
+    height: 2px;
+    background-color: $primario-400;
+  }
+}
+
+.fase__testo {
+  margin: 0;
+}
+
+@include da-desktop {
+
+  // Disposizione alternata: passi dispari a sinistra (testo allineato a destra, verso la linea), pari a destra.
+  // Metto ogni passo nella sua riga (grid-row) così scendono uno dopo l'altro.
+  .fase:nth-child(1) {
+    grid-row: 1;
+  }
+
+  .fase:nth-child(2) {
+    grid-row: 2;
+  }
+
+  .fase:nth-child(3) {
+    grid-row: 3;
+  }
+
+  .fase:nth-child(4) {
+    grid-row: 4;
+  }
+
+  .fase {
+
+    // Pallino più grande (32px), centrato sulla linea al centro delle due colonne
+    &::before {
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    // Linea verticale: 2px, al centro tra le due colonne
+    &::after {
+      top: 1rem;
+      height: 100%; // le righe non hanno spazio in mezzo: basta l'altezza del passo
+    }
+
+    // Trattino: dal bordo del testo (16px di distanza) fino alla linea centrale
+    .fase__titolo::before {
+      width: calc(var(--spazio-colonne) / 2 - 1rem);
+      top: 0.9375rem;
+    }
+  }
+
+  // Passi di sinistra (1° e 3°). Con calc() porto pallino, linea e trattino sulla linea centrale:
+  // 100% è la larghezza del passo e --spazio-colonne / 2 è metà dello spazio vuoto tra le due colonne.
+  .fase:nth-child(odd) {
+    grid-column: 1;
+    padding: 0 0 0 1.5rem;
+    text-align: right;
+
+    &::before {
+      left: calc(100% + var(--spazio-colonne) / 2 - 1rem);
+    }
+
+    &::after {
+      left: calc(100% + var(--spazio-colonne) / 2 - 1px);
+    }
+
+    .fase__titolo::before {
+      left: calc(100% + 1rem);
+    }
+  }
+
+  // Passi di destra (2° e 4°)
+  .fase:nth-child(even) {
+    grid-column: 2;
+    padding: 0 1.5rem 0 0;
+    text-align: left;
+
+    &::before {
+      left: auto;
+      right: calc(100% + var(--spazio-colonne) / 2 - 1rem);
+    }
+
+    &::after {
+      left: auto;
+      right: calc(100% + var(--spazio-colonne) / 2 - 1px);
+    }
+
+    .fase__titolo::before {
+      left: auto;
+      right: calc(100% + 1rem);
+    }
+  }
+}
+
+// =============================================================
+// OLTRE IL DESIGN: card delle passioni con foto
+// Struttura: <ul class="griglia-passioni"><li><article class="card-passione"><h3>…</h3><figure><figcaption>…</figcaption><div class="card-passione__foto"><img></div></figure></article></li>…</ul>
+// - Lista a CSS Grid: su mobile auto-fit mette una colonna quando c'è poco spazio e due da circa 656px, senza breakpoint.
+// - Da desktop (768px) la griglia è quella di Figma: 3 colonne, Musica e Yoga una sopra l'altra al centro.
+// - Dentro la card uso Flexbox in colonna: titolo, didascalia e foto.
+// =============================================================
+.griglia-passioni {
+  display: grid;
+  gap: 1rem; // 16px
+  // "repeat(auto-fit, minmax(19rem, 1fr))" = tante colonne quante ne entrano, larghe almeno 304px e tutte uguali.
+  // "min(100%, 19rem)" evita che la colonna sia più larga dello schermo sui telefoni molto piccoli.
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+
+  @include da-desktop {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 14rem); // due righe da 224px
+    gap: 1rem 1.5rem; // 16px tra le righe, 24px tra le colonne
+
+    // Natura e Arte occupano due righe (464px = 224 + 16 + 224), Musica e Yoga una riga ciascuna al centro
+    li:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+    }
+
+    li:nth-child(2) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    li:nth-child(3) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    li:nth-child(4) {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
+  }
+}
+
+.card-passione {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // 8px tra titolo e foto
+  height: 100%; // riempie la sua cella della griglia (le card di una riga sono alte uguali)
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: $primario-100;
+  // Con container-type posso usare cqw (1% della larghezza della card): l'altezza della foto segue la card, non la finestra.
+  container-type: inline-size;
+}
+
+.card-passione--alta {
+  gap: 1rem; // 16px tra titolo e foto
+}
+
+.card-passione__titolo {
+  margin: 0;
+  color: $colore-testo;
+  @include stile-testo-fluido($h3-piccolo-mobile, $h3-piccolo-desktop);
+}
+
+.card-passione__figura {
+  display: flex;
+  flex-direction: column;
+  flex: 1; // prende tutto lo spazio sotto il titolo
+  gap: 0.5rem; // 8px tra didascalia e foto
+  min-height: 0; // permette alla foto di rimpicciolirsi invece di far crescere la card
+  margin: 0;
+
+  figcaption {
+    margin: 0;
+  }
+}
+
+// Riquadro della foto: la foto lo riempie tutto (object-fit: cover) senza deformarsi.
+// MOBILE: l'altezza segue la larghezza della card. Card alte (Natura, Arte): proporzione 329 x 352 (Figma a 393px).
+// Card basse (Musica, Yoga): 152px a 393px, poi crescono fino a essere alte come le altre, così con due colonne sono tutte uguali.
+// DESKTOP: la foto prende tutto lo spazio che resta nella card.
+.card-passione__foto {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 329 / 352;
+
+  // Vale solo per le card basse: ".card-passione:not(.card-passione--alta) &" = "questa foto, dentro una card senza la classe --alta"
+  .card-passione:not(.card-passione--alta) & {
+    aspect-ratio: auto;
+    flex: 1; // se la riga è più alta (nella lista a due colonne) la foto si allunga e riempie la card
+    // Altezza minima: il 46,2% della larghezza della foto (a 393px: 152 su 329, come in Figma), così con una colonna
+    // Musica e Yoga restano più basse delle altre card. cqw = 1% della larghezza della card; la prima riga è per i browser senza cqw.
+    min-height: 9.5rem;
+    min-height: 46.2cqw;
+  }
+
+  @include da-desktop {
+    flex: 1;
+    aspect-ratio: auto;
+
+    .card-passione:not(.card-passione--alta) & {
+      min-height: 0;
+    }
+  }
+
+  img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: none;
+    width: 100%;
+    height: 100%; // senza questa riga l'attributo height="..." dell'HTML bloccherebbe l'altezza
+    object-fit: cover;
+  }
+}
+
+// Zona della foto che resta visibile (le foto sono verticali e il riquadro è largo e basso)
+.foto-musica {
+  object-position: 50% 44%;
+}
+
+.foto-yoga {
+  object-position: 50% 62.9%;
+}
+
+// =============================================================
+// INVITO FINALE: "Ti va di collaborare?" + due bottoni
+// Mobile: testo centrato (largo al massimo 267px) e bottoni a tutta larghezza uno sotto l'altro.
+// Desktop: testo a sinistra e bottoni affiancati, centrati.
+// =============================================================
+.collabora {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; // 40px
+
+  @include da-desktop {
+    gap: 3rem; // 48px
+  }
+}
+
+.collabora__testi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // 8px
+  max-width: 16.6875rem; // 267px
+  margin-inline: auto;
+  text-align: center;
+
+  @include da-desktop {
+    gap: 1rem; // 16px
+    max-width: none;
+    margin-inline: 0;
+    text-align: left;
+  }
+
+  h2,
+  p {
+    margin: 0;
+  }
+}
+
+.collabora__azioni {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // 16px
+  // Mobile: a tutta larghezza fino a 448px, poi resta di 448px e centrato
+  width: 100%; // serve perché con margin-inline: auto il contenitore non si allargherebbe da solo
+  max-width: $bottone-larghezza-max-mobile;
+  margin-inline: auto;
+
+  .btn {
+    width: 100%;
+  }
+
+  @include da-desktop {
+    flex-direction: row;
+    justify-content: center;
+    max-width: none;
+    gap: 2rem; // 32px
+
+    .btn {
+      width: auto;
+    }
+  }
+}

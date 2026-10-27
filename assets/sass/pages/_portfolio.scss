@@ -1,0 +1,25 @@
+// PORTFOLIO: introduzione centrata e elenco di card progetto (stessa card della Home, .card-progetto).
+// Le colonne le decide la griglia di Bootstrap; dentro le colonne dispongo tutto io con Flexbox e CSS Grid.
+@use "../variabili" as *;
+
+// =============================================================
+// INTRODUZIONE: titolo e testo centrati (il blocco .intro-pagina è in _layout.scss, perché lo usano anche altre pagine)
+// =============================================================
+.portfolio-intro {
+  // Spazio tra la barra e il titolo: da 32px (mobile) a 48px (desktop), cresce piano piano (come in Chi sono)
+  padding-top: fluido(2rem, 3rem);
+}
+
+// =============================================================
+// ELENCO DEI PROGETTI
+// La lista è un CSS Grid (.griglia-progetti, in _layout.scss): una colonna su mobile, due da desktop.
+// Qui cambio solo lo spazio tra le card (24px anche su mobile, come in Figma) e gli spazi sopra la lista.
+// =============================================================
+.portfolio-elenco {
+  // Spazio tra l'introduzione e le card: da 48px (mobile) a 64px (desktop)
+  padding-top: fluido(3rem, 4rem);
+}
+
+.griglia-progetti--portfolio {
+  gap: 1.5rem; // 24px
+}

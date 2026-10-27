@@ -1,0 +1,8 @@
+# Impostazioni locali dell'editor (VS Code)
+.vscode/
+
+# Requisiti del progetto per Claude Code (file di lavoro, non fa parte del sito)
+CLAUDE.md
+
+# Impostazioni locali di Claude Code
+.claude/

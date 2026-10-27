@@ -1,0 +1,14 @@
+// FILE PRINCIPALE: non contiene stili, solo l'elenco dei file da includere.
+// Sass li unisce in un unico assets/css/style.css (compilato da Live Sass Compiler).
+// L'ordine conta: prima variabili e base, poi layout, componenti e pagine.
+// Ogni file che usa le variabili deve iniziare con: @use "variabili" as *;
+
+@use "variabili";
+@use "base";
+@use "layout";
+@use "componenti";
+@use "pages/home";
+@use "pages/chi-sono";
+@use "pages/portfolio";
+@use "pages/cv";
+@use "pages/contatti";

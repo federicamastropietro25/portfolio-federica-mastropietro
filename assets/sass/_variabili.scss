@@ -1,0 +1,276 @@
+// VARIABILI: qui metto i valori della mia style guide (da Figma). Non ci sono regole che stilano gli elementi:
+// quelle stanno in _base.scss, _layout.scss e _componenti.scss.
+// Per usare queste variabili in un altro file scrivo all'inizio: @use "variabili" as *;
+
+@use "sass:map";
+@use "sass:math";
+
+// =============================================================
+// BREAKPOINT (parto dal mobile: gli stili base sono quelli mobile)
+// =============================================================
+$breakpoint-desktop: 768px;
+
+// Mixin per gli stili desktop: @include da-desktop { ... } equivale a @media (min-width: 768px) { ... }
+// Un mixin è un pezzo di codice riutilizzabile con un nome; "@content" è il punto dove va il codice che scrivo tra le graffe.
+@mixin da-desktop {
+  @media (min-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+
+// =============================================================
+// COLOR SYSTEM (da Figma). Uso SOLO questi colori.
+// =============================================================
+
+// --- Primario: tonalità scure per i testi, chiare per sezioni ed elementi grafici ---
+$primario-50: #F9F2EF;
+$primario-100: #ECD5CD;
+$primario-200: #E2C1B5;
+$primario-300: #D5A593;
+$primario-400: #CD947E;
+$primario-500: #C1795E;
+$primario-600: #B06E56;
+$primario-700: #895643;
+$primario-800: #6A4334;
+$primario-900: #513327;
+
+// --- Secondario: per bottoni e link, e per il logo ---
+$secondario-50: #EFF0EE;
+$secondario-100: #CCD0C9;
+$secondario-200: #B4BAAF;
+$secondario-300: #929A8A;
+$secondario-400: #7D8673;
+$secondario-500: #5C6850;
+$secondario-600: #545F49;
+$secondario-700: #414A39;
+$secondario-800: #33392C;
+$secondario-900: #272C22;
+
+// --- Neutro: sfondi generali, ombre, placeholder ed elementi strutturali ---
+$neutro-50: #FFFEFC;
+$neutro-100: #FFFBF6;
+$neutro-200: #FFF9F2;
+$neutro-300: #FFF6EC;
+$neutro-400: #FFF5E9;
+$neutro-500: #FFF2E3;
+$neutro-600: #E8DCCF;
+$neutro-700: #B5ACA1;
+$neutro-800: #8C857D;
+$neutro-900: #6B665F;
+
+// --- Colori semantici (messaggi di stato): 50 = sfondo chiaro, 500 = principale, 900 = bordo/scuro ---
+$success-green-50: #F1F7F0;
+$success-green-500: #15803D;
+$success-green-900: #064E3B;
+
+$warning-yellow-50: #FFFBEB;
+$warning-yellow-500: #E9B41B;
+$warning-yellow-900: #664D03;
+
+$error-red-50: #FEF2F2;
+$error-red-500: #B91C1C;
+$error-red-900: #440B0B;
+
+$info-blue-50: #F1F6F9;
+$info-blue-500: #3E7292;
+$info-blue-900: #1D3645;
+
+// --- Colori funzionali (questi li uso nei componenti) ---
+$colore-testo: #262423; // Body Text
+$colore-titoli: $primario-800; // Titoli
+$colore-sfondo: $neutro-100; // Sfondo generale
+$colore-card: $primario-100; // Card
+$colore-bottoni: $secondario-500; // Colore principale dei bottoni
+
+// =============================================================
+// GRIGLIA E SPAZIATURA (da Figma)
+// Desktop: 12 colonne, spazio tra le colonne 24px, contenuto largo al massimo 1080px.
+// Mobile: 4 colonne, spazio tra le colonne 16px.
+// Margini laterali: 16px. Le spaziature sono multipli di 8px.
+// =============================================================
+$spazio-base: 0.5rem; // 8px: l'unità di base, uso i suoi multipli (8, 16, 24, 32...)
+$griglia-margine: 1rem; // 16px: margini laterali del contenuto
+$griglia-gutter-mobile: 1rem; // 16px: spazio tra le colonne su mobile
+$griglia-gutter-desktop: 1.5rem; // 24px: spazio tra le colonne su desktop
+$griglia-larghezza-max: 67.5rem; // 1080px: larghezza massima della griglia (12 colonne da 68px + 11 spazi da 24px)
+
+// =============================================================
+// EFFETTI E INTERATTIVITÀ (da Figma)
+// =============================================================
+$focus-anello: 0 0 0 2px $neutro-50, 0 0 0 4px #000; // lo stato focus è uguale per tutti gli elementi interattivi
+$ombra-hover: 0 4px 8px rgba($neutro-800, 0.7); // ombra dei bottoni all'hover
+$ombra-hover-campo: 0 2px 4px rgba($neutro-800, 0.7); // ombra dei campi del modulo all'hover
+$navigazione-padding-sopra: 3rem; // 48px sopra il logo (barra desktop)
+$navigazione-padding-sotto: 1.5rem; // 24px sotto il logo (in Figma sono 48px): la barra desktop è alta 120px, l'ho ridotta perché è sempre visibile
+// Larghezza massima dei bottoni "da soli" su mobile (hero, invito finale, bottoni di sezione).
+// Ora è 100% (tutta larghezza, come in Figma); con una misura fissa, per esempio 28rem, i bottoni smettono di allargarsi e restano centrati.
+$bottone-larghezza-max-mobile: 100%; // tutta la larghezza, come in Figma (per limitarla scrivi per esempio 28rem = 448px)
+$raggio-bottone: 0.75rem; // 12px
+$raggio-piccolo: 0.5rem; // 8px: link, campi, focus
+$transizione: 0.15s ease;
+
+// Mixin per l'hover: lo applico solo sui dispositivi che hanno davvero il mouse (niente hover su mobile)
+// Uso: @include con-hover { &:hover { ... } }
+// "@media (hover: hover)" chiede al browser se il dispositivo ha un puntatore: su un telefono no, quindi niente hover.
+@mixin con-hover {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+// =============================================================
+// TIPOGRAFIA: Plus Jakarta Sans
+// =============================================================
+$font-principale: "Plus Jakarta Sans", sans-serif;
+
+// Pesi del font
+$peso-regular: 400;
+$peso-medium: 500;
+$peso-semibold: 600;
+$peso-bold: 700;
+
+// Una mappa in Sass è un elenco con le etichette per tenere insieme più valori: $h1-mobile contiene size, line-height,
+// weight e spacing del titolo H1 su mobile. Il mixin "stile-testo" (dopo le mappe) la legge e scrive le regole CSS.
+// size e line-height sono in rem (1rem = 16px, così rispettano lo zoom del browser), letter-spacing in em (-2.5% = -0.025em).
+// Scala: desktop 1.25 (major third), mobile 1.2 (minor third), base 16px.
+
+// --- Mobile ---
+$h1-mobile: (
+  size: 2.0625rem,
+  line-height: 2.5rem,
+  weight: $peso-bold,
+  spacing: -0.01em
+); // 33px
+$h2-mobile: (
+  size: 1.75rem,
+  line-height: 2.5rem,
+  weight: $peso-semibold,
+  spacing: -0.005em
+); // 28px
+$h3-mobile: (
+  size: 1.5rem,
+  line-height: 2rem,
+  weight: $peso-semibold,
+  spacing: -0.005em
+); // 24px (H3 standard)
+$h3-piccolo-mobile: (
+  size: 1.25rem,
+  line-height: 2rem,
+  weight: $peso-medium,
+  spacing: 0
+); // 20px
+$body-mobile: (
+  size: 1rem,
+  line-height: 1.5rem,
+  weight: $peso-regular,
+  spacing: 0
+); // 16px
+$body-small-mobile: (
+  size: 0.875rem,
+  line-height: 1.5rem,
+  weight: $peso-medium,
+  spacing: 0.01em
+); // 14px
+$caption-mobile: (
+  size: 0.75rem,
+  line-height: 1rem,
+  weight: $peso-regular,
+  spacing: 0.02em
+); // 12px
+
+// --- Desktop (da 768px) ---
+$h1-hero-desktop: (
+  size: 4rem,
+  line-height: 4.5rem,
+  weight: $peso-bold,
+  spacing: -0.025em
+); // 64px
+$h1-desktop: (
+  size: 3rem,
+  line-height: 3.5rem,
+  weight: $peso-bold,
+  spacing: -0.02em
+); // 48px
+$h2-desktop: (
+  size: 2.4375rem,
+  line-height: 3rem,
+  weight: $peso-semibold,
+  spacing: -0.015em
+); // 39px
+$h3-desktop: (
+  size: 1.9375rem,
+  line-height: 2.5rem,
+  weight: $peso-semibold,
+  spacing: -0.01em
+); // 31px (H3 standard)
+$h3-piccolo-desktop: (
+  size: 1.5625rem,
+  line-height: 2rem,
+  weight: $peso-medium,
+  spacing: -0.005em
+); // 25px (H3 small)
+$body-large-desktop: (
+  size: 1.25rem,
+  line-height: 2rem,
+  weight: $peso-regular,
+  spacing: 0
+); // 20px
+$body-desktop: (
+  size: 1rem,
+  line-height: 1.5rem,
+  weight: $peso-regular,
+  spacing: 0
+); // 16px
+$body-small-desktop: (
+  size: 0.875rem,
+  line-height: 1.5rem,
+  weight: $peso-medium,
+  spacing: 0.01em
+); // 14px
+$caption-desktop: (
+  size: 0.75rem,
+  line-height: 1rem,
+  weight: $peso-regular,
+  spacing: 0.02em
+); // 12px
+
+// Mixin che applica uno stile di testo (una delle mappe qui sopra).
+// Esempio: @include stile-testo($h1-mobile);
+// "map.get($stile, size)" vuol dire "prendi dalla mappa il valore con l'etichetta size".
+// Risultato: 4 righe di CSS (font-size, line-height, font-weight, letter-spacing) scritte in un colpo solo.
+@mixin stile-testo($stile) {
+  font-size: map.get($stile, size);
+  line-height: map.get($stile, line-height);
+  font-weight: map.get($stile, weight);
+  letter-spacing: map.get($stile, spacing);
+}
+
+// =============================================================
+// VALORI FLUIDI
+// Invece di cambiare di colpo a 768px, una misura cresce piano piano tra 393px (valore mobile) e 1112px (valore desktop).
+// Uso clamp(minimo, valore, massimo) e la larghezza della finestra (vw). Esempio: font-size: fluido(2rem, 4rem);
+// =============================================================
+$larghezza-min-fluida: 24.5625rem; // 393px
+$larghezza-max-fluida: 69.5rem; // 1112px
+
+@function fluido($minimo, $massimo) {
+  // di quanto cresce il valore per ogni rem di larghezza della finestra
+  $pendenza: math.div($massimo - $minimo, $larghezza-max-fluida - $larghezza-min-fluida);
+  // il valore a larghezza zero (serve per far tornare i conti a 393px)
+  $intercetta: $minimo - $pendenza * $larghezza-min-fluida;
+
+  @return clamp(#{$minimo}, calc(#{$intercetta} + #{$pendenza * 100}vw), #{$massimo});
+}
+
+// Come "stile-testo", ma dimensione e interlinea sono fluide tra lo stile mobile e quello desktop.
+// Il peso del font è lo stesso nei due stili; la spaziatura tra le lettere cambia a 768px.
+@mixin stile-testo-fluido($mobile, $desktop) {
+  font-size: fluido(map.get($mobile, size), map.get($desktop, size));
+  line-height: fluido(map.get($mobile, line-height), map.get($desktop, line-height));
+  font-weight: map.get($mobile, weight);
+  letter-spacing: map.get($mobile, spacing);
+
+  @include da-desktop {
+    letter-spacing: map.get($desktop, spacing);
+  }
+}

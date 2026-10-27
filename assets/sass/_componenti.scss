@@ -1,0 +1,895 @@
+// COMPONENTI: gli elementi che riutilizzo nel sito, uno sotto l'altro, separati da commenti.
+// Il responsive lo scrivo dentro ogni componente: prima gli stili mobile, poi da 768px (da-desktop).
+// Regole che valgono per tutti: l'hover solo con @include con-hover (mai su mobile); il focus è uguale per tutti ($focus-anello).
+@use "variabili" as *;
+
+// =============================================================
+// BOTTONI: .btn (Bootstrap) + .bottone-primario o .bottone-secondario
+// Stati: default, hover (solo desktop), pressed, focused, disabled.
+// Esempio: <a class="btn bottone-primario" href="...">Testo</a>
+// =============================================================
+.btn.bottone-primario,
+.btn.bottone-secondario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem; // 48px
+    padding: 0.5rem 1rem;
+    border: 1px solid;
+    border-radius: $raggio-bottone;
+    font-family: $font-principale;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: $peso-semibold;
+    letter-spacing: 0;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color $transizione, border-color $transizione, color $transizione, box-shadow $transizione;
+
+    // Disabilitato: Bootstrap abbassa l'opacità, io invece ho già deciso i colori
+    &:disabled,
+    &.disabled,
+    &[aria-disabled="true"] {
+        opacity: 1;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+}
+
+// --- Primario ---
+.btn.bottone-primario {
+    color: $neutro-50;
+    background-color: $secondario-500;
+    border-color: $secondario-500;
+
+    @include con-hover {
+        &:hover {
+            color: $neutro-50;
+            background-color: $secondario-600;
+            border-color: $secondario-600;
+            box-shadow: $ombra-hover;
+        }
+    }
+
+    &:focus-visible {
+        color: $neutro-50;
+        background-color: $secondario-500;
+        border-color: $secondario-500;
+        outline: 0;
+        box-shadow: $focus-anello;
+    }
+
+    &:active {
+        color: $neutro-50;
+        background-color: $secondario-800;
+        border-color: $secondario-800;
+        box-shadow: none;
+    }
+
+    &:disabled,
+    &.disabled,
+    &[aria-disabled="true"] {
+        color: $neutro-600;
+        background-color: $neutro-700;
+        border-color: $neutro-700;
+    }
+}
+
+// --- Secondario ---
+.btn.bottone-secondario {
+    color: $secondario-600;
+    background-color: $neutro-50;
+    border-color: $secondario-600;
+
+    @include con-hover {
+        &:hover {
+            color: $secondario-600;
+            background-color: $secondario-50;
+            border-color: $secondario-600;
+            box-shadow: $ombra-hover;
+        }
+    }
+
+    &:focus-visible {
+        color: $secondario-600;
+        background-color: $neutro-50;
+        border-color: $secondario-600;
+        outline: 0;
+        box-shadow: $focus-anello;
+    }
+
+    &:active {
+        color: $secondario-900;
+        background-color: $secondario-200;
+        border-color: $secondario-600;
+        box-shadow: none;
+    }
+
+    &:disabled,
+    &.disabled,
+    &[aria-disabled="true"] {
+        color: $neutro-700;
+        background-color: $neutro-50;
+        border-color: $neutro-700;
+    }
+}
+
+// =============================================================
+// VOCE DI NAVIGAZIONE: link della barra (e del menu mobile)
+// Esempio: <a class="voce-nav" href="...">Home</a>
+// La sottolineatura la disegno con ::after (così non sposta il testo).
+// Pressed: su mobile sottolineatura verde da 2px; da desktop 1px scura.
+// =============================================================
+.voce-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem; // 48px
+    min-width: 2.75rem; // 44px: anche la voce più corta (CV) ha un'area cliccabile di almeno 44x44px
+    padding: 0.5rem;
+    border-radius: $raggio-piccolo;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: $peso-medium;
+    color: $colore-testo;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color $transizione, background-color $transizione, box-shadow $transizione;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: 0.5rem;
+        height: 2px;
+        background-color: transparent;
+        transition: background-color $transizione;
+    }
+
+    @include con-hover {
+        &:hover {
+            color: $secondario-500;
+
+            &::after {
+                background-color: $secondario-500;
+            }
+        }
+    }
+
+    &:focus-visible {
+        outline: 0;
+        color: $colore-testo;
+        font-weight: $peso-regular;
+        background-color: $neutro-50;
+        box-shadow: $focus-anello;
+
+        &::after {
+            background-color: transparent;
+        }
+    }
+
+    &:active {
+        color: $secondario-500;
+
+        &::after {
+            background-color: $secondario-500;
+        }
+    }
+
+    @include da-desktop {
+        &:active {
+            color: $secondario-900;
+
+            &::after {
+                height: 1px;
+                background-color: $secondario-900;
+            }
+        }
+    }
+}
+
+// =============================================================
+// LINK DEL FOOTER (es. "Contattami")
+// Mobile 16/24, da desktop 20/32. Ha gli stessi stati della voce di navigazione.
+// Esempio: <a class="link-footer" href="contatti.html">Contattami</a>
+// =============================================================
+.link-footer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    margin-inline: -0.5rem; // il padding serve solo allo stato focus: così il testo non si sposta
+    border-radius: $raggio-piccolo;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: $peso-medium;
+    color: $colore-testo;
+    text-decoration: none;
+    transition: color $transizione, background-color $transizione, box-shadow $transizione;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: 0.5rem;
+        height: 2px;
+        background-color: transparent;
+        transition: background-color $transizione;
+    }
+
+    @include con-hover {
+        &:hover {
+            color: $secondario-600;
+
+            &::after {
+                background-color: $secondario-600;
+            }
+        }
+    }
+
+    &:focus-visible {
+        outline: 0;
+        font-weight: $peso-regular;
+        background-color: $neutro-50;
+        box-shadow: $focus-anello;
+
+        &::after {
+            background-color: transparent;
+        }
+    }
+
+    &:active {
+        color: $secondario-600;
+
+        &::after {
+            background-color: $secondario-600;
+        }
+    }
+
+    @include da-desktop {
+        padding: 0.5rem;
+        font-size: 1.25rem;
+        line-height: 2rem;
+
+        &:active {
+            color: $secondario-900;
+            font-weight: $peso-regular;
+
+            &::after {
+                height: 1px;
+                background-color: $secondario-900;
+            }
+        }
+    }
+}
+
+// =============================================================
+// LINK CON ICONA (es. il mio profilo LinkedIn: icona SVG + testo)
+// Esempio: <a class="link-profilo" href="..."><svg ...></svg> in/federica-mastropietro</a>
+// L'icona è un SVG scritto nell'HTML con stroke="currentColor": così cambia colore insieme al testo.
+// =============================================================
+.link-profilo {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+    margin-inline: -0.5rem; // il padding serve solo allo stato focus: così il contenuto non si sposta
+    border-radius: $raggio-piccolo;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: $peso-medium;
+    color: $secondario-700;
+    text-decoration: none;
+    transition: color $transizione, background-color $transizione, box-shadow $transizione;
+
+    svg {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: -2px;
+        height: 2px;
+        background-color: transparent;
+        transition: background-color $transizione;
+    }
+
+    @include con-hover {
+        &:hover {
+            color: $secondario-500;
+
+            &::after {
+                background-color: $secondario-500;
+            }
+        }
+    }
+
+    &:focus-visible {
+        outline: 0;
+        color: $colore-testo;
+        font-weight: $peso-regular;
+        background-color: $neutro-50;
+        box-shadow: $focus-anello;
+
+        &::after {
+            background-color: transparent;
+        }
+    }
+
+    &:active {
+        color: $secondario-500;
+
+        &::after {
+            background-color: $secondario-500;
+        }
+    }
+
+    @include da-desktop {
+        &:active {
+            color: $secondario-900;
+
+            &::after {
+                bottom: -1px;
+                height: 1px;
+                background-color: $secondario-900;
+            }
+        }
+    }
+}
+
+// =============================================================
+// CAMPO DEL MODULO: etichetta + input (o textarea)
+// Esempio:
+//   <div class="campo">
+//     <label class="form-label campo-label" for="nome">Nome e Cognome*</label>
+//     <input class="form-control campo-input" id="nome" name="nome" placeholder="Mario Rossi" required>
+//   </div>
+// Stati: default, hover (solo desktop), selezionato (bordo scuro, placeholder nascosto), compilato, errore, corretto.
+// Quando cambia lo stato nulla si sposta: il bordo è sempre 1px e lo spazio del messaggio d'errore è sempre riservato.
+// =============================================================
+.campo {
+    display: grid; // una colonna sotto i 384px di modulo; due (etichetta | messaggio) sopra, vedi @container più sotto
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.5rem;
+    // Spazio sotto il campo: con il messaggio d'errore (sempre riservato, vedi sotto) fa 36px dal campo al successivo.
+    padding-bottom: 1rem;
+}
+
+.campo-label {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: $peso-regular;
+    color: $colore-testo;
+}
+
+.form-control.campo-input {
+    padding: 0.75rem 1rem;
+    font-family: $font-principale;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: $peso-regular;
+    color: $colore-testo;
+    caret-color: $colore-testo;
+    background-color: $neutro-50;
+    border: 1px solid $primario-200;
+    border-radius: $raggio-piccolo;
+    box-shadow: none;
+    transition: background-color $transizione, border-color $transizione, box-shadow $transizione;
+
+    &::placeholder {
+        color: $neutro-900; // un tono più scuro di Figma (neutro-800) per avere il contrasto AA (5,6:1 invece di 3,6:1)
+        opacity: 1;
+    }
+
+    // Compilato: bordo scuro
+    &:not(:placeholder-shown) {
+        border-color: $primario-800;
+    }
+
+    @include con-hover {
+        &:hover {
+            background-color: $primario-50;
+            box-shadow: $ombra-hover-campo;
+        }
+    }
+
+    // Campo selezionato (focus, anche mentre clicco): ha SEMPRE l'aspetto dello stato "pressed" di Figma, cioè bordo scuro
+    // e placeholder nascosto, senza anello. Perché non mostro un aspetto diverso per la tastiera: sui campi di testo il browser
+    // considera "da tastiera" anche il click del mouse e con solo HTML e CSS (senza JavaScript) non si possono distinguere.
+    &:focus,
+    &:active {
+        outline: 0;
+        color: $colore-testo;
+        background-color: $neutro-50;
+        border-color: $primario-800;
+        box-shadow: none;
+
+        &::placeholder {
+            color: transparent;
+        }
+    }
+
+    // Errore: dopo che ho toccato il campo e il valore non è valido
+    // (":user-invalid" è un selettore che il browser attiva SOLO dopo che ho toccato il campo o provato
+    // a inviare: così il campo non è rosso già quando apro la pagina, come succederebbe con ":invalid")
+    // Il bordo resta da 1px (se lo facessi di 1,5px il browser lo arrotonda e il campo cambierebbe altezza, spostando
+    // gli altri campi): il mezzo pixel in più lo aggiungo con un'ombra, che non occupa spazio.
+    &:user-invalid {
+        background-color: $error-red-50;
+        border: 1px solid $error-red-500;
+        box-shadow: 0 0 0 0.5px $error-red-500;
+    }
+
+    // Errore e selezionato insieme: resta il look pressed, ma il bordo rosso mi dice che c'è ancora un problema
+    &:user-invalid:focus {
+        border-color: $error-red-500;
+        box-shadow: 0 0 0 0.5px $error-red-500;
+    }
+
+    // Corretto: dopo che l'ho toccato il valore è valido (":user-valid" è il contrario di ":user-invalid": il browser lo
+    // attiva solo dopo che ho scritto qualcosa). Il bordo diventa verde e, nell'etichetta, compare la spunta (vedi sotto).
+    &:user-valid {
+        border-color: $success-green-500;
+        box-shadow: 0 0 0 0.5px $success-green-500;
+    }
+
+    &:user-valid:focus {
+        border-color: $primario-800;
+        box-shadow: none;
+    }
+}
+
+// L'etichetta diventa rossa se il suo campo non è valido
+// Uso :has(...), che vuol dire "che contiene": un .campo che contiene un input non valido. Serve per colorare l'etichetta,
+// che nell'HTML sta prima dell'input. Nei browser molto vecchi l'etichetta resta del colore normale.
+.campo:has(.campo-input:user-invalid) .campo-label {
+    color: $error-red-900;
+}
+
+// Spunta di conferma nell'etichetta quando il campo è corretto.
+// Con mask uso la forma della spunta (Tabler "check") come stampino e la coloro con il verde del mio color system.
+// Sta in un ::after di 16x16px dentro la riga dell'etichetta: non sposta nulla.
+.campo:has(.campo-input:user-valid) .campo-label::after {
+    content: "";
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+    vertical-align: -0.1875rem;
+    background-color: $success-green-900; // verde scuro: più contrasto sul rosa della card
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5l10 -10'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+// Area di testo (campo "Messaggio"): ha lo stesso stile del campo, ma è più alta e si ridimensiona solo in altezza
+textarea.form-control.campo-input {
+    min-height: 9rem; // 144px
+    resize: vertical;
+}
+
+// Messaggio d'errore sotto il campo: è invisibile finché il campo non è valido, ma il suo spazio è sempre riservato
+// ("visibility: hidden" e non "display: none"), così quando compare nessun altro campo si sposta.
+// Il messaggio è alto 16px, su UNA riga (i testi sono brevi), a 4px dal campo; sotto ci sono 16px: in tutto 36px
+// dal campo al successivo (in Figma sono 24px: 12px in più per avere il messaggio senza spostare nulla e con aria intorno).
+// Compare solo con il CSS (:user-invalid + :has). aria-live="polite" lo fa leggere dagli screen reader.
+// Esempio: <p class="campo-errore" aria-live="polite">Inserisci un indirizzo email valido.</p>
+.campo-errore {
+    visibility: hidden;
+    margin: -0.25rem 0 0; // 8px di gap del .campo meno 4px = 4px sotto il campo
+    height: 1rem; // 16px
+    font-size: 0.875rem; // 14px (Body small)
+    line-height: 1rem;
+    font-weight: $peso-medium;
+    letter-spacing: 0.01em;
+    color: $error-red-900;
+}
+
+.campo:has(.campo-input:user-invalid) .campo-errore {
+    visibility: visible;
+}
+
+// Quando il modulo è abbastanza largo (almeno 384px) il messaggio d'errore sta sulla stessa riga dell'etichetta,
+// a destra, e tra un campo e il successivo ci sono i 24px di Figma.
+// Uso @container: come una media query, ma guarda la larghezza del modulo e non della finestra, così il messaggio
+// va accanto all'etichetta solo se ci stanno tutti e due (se il modulo è stretto resta sotto il campo).
+// Con la griglia (due colonne, input su tutta la riga sotto) e grid-row/grid-column posiziono gli elementi anche se nell'HTML
+// il messaggio viene dopo l'input.
+@container modulo (min-width: 24rem) {
+    .campo {
+        grid-template-columns: auto 1fr;
+        column-gap: 1rem;
+        align-items: center;
+        padding-bottom: 1.5rem; // 24px tra un campo e il successivo (e dall'ultimo al bottone)
+    }
+
+    .campo-label {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .campo-errore {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+        height: 1.5rem; // alto come la riga dell'etichetta
+        line-height: 1.5rem;
+        text-align: right;
+    }
+
+    .campo-input {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+// =============================================================
+// ESITO DELL'INVIO DEL MODULO (successo / errore)
+// Il testo lo inserisce lo script di EmailJS dentro <p class="esito-invio" role="status" aria-live="polite">.
+// Se è vuoto non si vede. Classi: .esito-successo oppure .esito-errore.
+// =============================================================
+.esito-invio {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid;
+    border-radius: $raggio-piccolo;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: $peso-medium;
+
+    &:empty {
+        display: none;
+    }
+
+    &.esito-successo {
+        color: $success-green-900;
+        background-color: $success-green-50;
+        border-color: $success-green-500;
+    }
+
+    &.esito-errore {
+        color: $error-red-900;
+        background-color: $error-red-50;
+        border-color: $error-red-500;
+    }
+}
+
+// =============================================================
+// BADGE / TAG (es. "UI Design"): etichetta a pillola
+// Esempio: <li class="badge-tag">UI Design</li>
+// =============================================================
+.badge-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 1rem;
+    border-radius: 999px;
+    background-color: $primario-100;
+    color: $colore-testo;
+    font-size: 0.875rem; // 14px (Body small)
+    line-height: 1.5rem;
+    font-weight: $peso-medium;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+// =============================================================
+// CARD PROGETTO (portfolio): immagine, tag, titolo, testo, bottone
+// Struttura:
+//   <article class="card-progetto"> immagine + <div class="card-progetto__corpo"> (tag, titolo, testo, bottone) </div> </article>
+// La card riempie la colonna: la larghezza la decide la pagina. Dentro uso Grid e Flexbox.
+// =============================================================
+.card-progetto {
+    // CSS Grid: due righe, l'immagine (con la sua altezza) e il corpo (occupa lo spazio che resta)
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    border-radius: 1rem; // 16px
+    background-color: $neutro-100;
+}
+
+.card-progetto__immagine {
+    display: block;
+    width: 100%;
+    height: auto; // senza questa riga l'attributo height="..." dell'HTML bloccherebbe l'altezza e l'immagine verrebbe tagliata ai lati
+    aspect-ratio: 361 / 184; // mobile
+    object-fit: cover;
+    object-position: top; // se l'immagine è più alta del riquadro si taglia in basso, come in Figma
+    // Sfondo che si vede dietro le immagini con trasparenza
+    background: linear-gradient(to bottom, $primario-100 46.635%, $neutro-100);
+
+    @include da-desktop {
+        aspect-ratio: 2 / 1; // desktop 528 x 264
+    }
+}
+
+.card-progetto__corpo {
+    // Flexbox in colonna: il bottone con margin-top: auto resta in fondo alla card
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, $neutro-100, $primario-100);
+}
+
+.card-progetto__tag {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.card-progetto__titolo {
+    margin: 0;
+    color: $primario-900; // più scuro del titolo standard, come in Figma
+    @include stile-testo-fluido($h3-mobile, $h3-desktop);
+}
+
+.card-progetto__testo {
+    margin: 0 0 0.5rem; // 16px del gap + 8px = 24px prima del bottone
+}
+
+.card-progetto__corpo .btn {
+    margin-top: auto; // se le card hanno altezze diverse il bottone resta in basso
+    align-self: stretch; // mobile: tutta la larghezza
+
+    @include da-desktop {
+        align-self: flex-start; // desktop: largo quanto il testo
+    }
+}
+
+// =============================================================
+// ICONA SOCIAL (GitHub, LinkedIn, Instagram, Behance): link con icona SVG scritta nell'HTML
+// Tutte e quattro si comportano allo stesso modo.
+// Esempio: <a class="icona-social" href="..." target="_blank" rel="noopener noreferrer"
+//             aria-label="LinkedIn (si apre in una nuova scheda)" title="LinkedIn"><svg aria-hidden="true" ...>...</svg></a>
+// Area 48x48. Default: icona 40px. Hover (solo desktop): icona 48px, verde scuro, con ombra morbida.
+// Pressed: icona 32px. Focus: cerchio chiaro con anello nero. Il tratto è sempre 2px.
+// =============================================================
+.icona-social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem; // 48px
+    height: 3rem;
+    border-radius: 50%;
+    color: $colore-testo;
+    text-decoration: none;
+    transition: color $transizione, background-color $transizione, box-shadow $transizione;
+
+    svg {
+        width: 2.5rem; // 40px
+        height: 2.5rem;
+        flex-shrink: 0;
+        transition: width $transizione, height $transizione, filter $transizione;
+    }
+
+    // Il tratto resta 2px anche quando l'icona cambia dimensione
+    svg * {
+        vector-effect: non-scaling-stroke;
+    }
+
+    @include con-hover {
+        &:hover {
+            color: $secondario-700;
+
+            svg {
+                width: 3rem; // 48px
+                height: 3rem;
+                filter: drop-shadow(0 2px 3px rgba($secondario-500, 0.8));
+            }
+        }
+    }
+
+    &:focus-visible {
+        outline: 0;
+        background-color: $neutro-100;
+        box-shadow: $focus-anello;
+    }
+
+    &:active svg {
+        width: 2rem; // 32px
+        height: 2rem;
+    }
+}
+
+// =============================================================
+// PULSANTE CON ICONA (menu hamburger e chiudi): area 48x48, icona 24px
+// Niente hover. Pressed: cerchio chiaro con ombra. Focus: cerchio chiaro con anello nero.
+// Esempio: <label class="pulsante-icona" for="..."><svg aria-hidden="true" ...>...</svg></label>
+// =============================================================
+.pulsante-icona {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem; // 48px
+    height: 3rem;
+    border-radius: 50%;
+    color: $colore-testo;
+    cursor: pointer;
+    transition: background-color $transizione, box-shadow $transizione;
+
+    svg {
+        width: 1.5rem; // 24px
+        height: 1.5rem;
+    }
+
+    &:active {
+        background-color: $neutro-100;
+        box-shadow: 0 2px 4px rgba($neutro-800, 0.5);
+    }
+
+    &:focus-visible {
+        outline: 0;
+        background-color: $neutro-100;
+        box-shadow: $focus-anello;
+    }
+}
+
+// =============================================================
+// PULSANTE "TORNA SU"
+// Cerchio 48x48 fisso in basso a destra, con la freccia in su. Link a #inizio (id sul <body>).
+// Compare solo dopo aver scrollato (vedi più sotto); gli stati sono come quelli dei bottoni primari.
+// Esempio (dopo il footer): <a class="torna-su" href="#inizio" aria-label="Torna all'inizio della pagina"><svg ...arrow-up...></svg></a>
+// =============================================================
+.torna-su {
+    position: fixed;
+    right: 1rem; // 16px
+    bottom: 1rem;
+    z-index: 90; // sotto la barra di navigazione e il menu mobile
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem; // 48px
+    height: 3rem;
+    border-radius: 50%;
+    color: $neutro-50;
+    background-color: $secondario-500;
+    text-decoration: none;
+    transition: background-color $transizione, box-shadow $transizione;
+
+    @include da-desktop {
+        right: 1.5rem; // 24px
+        bottom: 1.5rem;
+    }
+
+    svg {
+        width: 1.5rem; // 24px
+        height: 1.5rem;
+    }
+
+    @include con-hover {
+        &:hover {
+            background-color: $secondario-600;
+            box-shadow: $ombra-hover;
+        }
+    }
+
+    &:focus-visible {
+        outline: 0;
+        background-color: $secondario-500;
+        box-shadow: $focus-anello;
+    }
+
+    &:active {
+        background-color: $secondario-800;
+        box-shadow: none;
+    }
+}
+
+// Il pulsante compare dopo lo scroll (solo dove il browser supporta le animazioni legate allo scroll)
+// - @supports: le regole qui dentro valgono solo se il browser conosce la funzione; altrimenti il pulsante resta sempre visibile.
+// - animation-timeline: scroll(root): l'animazione avanza mentre scorro la pagina, senza JavaScript.
+// - animation-range: compare tra 200px e 400px di scroll.
+// - @keyframes mostra-torna-su (qui sotto): da invisibile a visibile.
+@supports (animation-timeline: scroll()) {
+    .torna-su {
+        opacity: 0;
+        visibility: hidden;
+        animation: mostra-torna-su linear both;
+        animation-timeline: scroll(root);
+        animation-range: 200px 400px;
+    }
+}
+
+@keyframes mostra-torna-su {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(0.5rem);
+    }
+
+    to {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+}
+
+// Per chi ha disattivato le animazioni: il pulsante resta sempre visibile
+@media (prefers-reduced-motion: reduce) {
+    .torna-su {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        animation: none;
+    }
+}
+
+// =============================================================
+// CARD VALORE (es. "User-Centered Design"): icona in un cerchio, titolo e testo
+// Esempio:
+//   <li class="card-valore">
+//     <span class="card-valore__icona"><img src="assets/icone/user-heart.svg" alt="" width="24" height="24"></span>
+//     <h3 class="card-valore__titolo">Titolo</h3>
+//     <p class="card-valore__testo">Testo</p>
+//   </li>
+// Sfondo $primario-100, raggio 16px. Mobile: padding 16px; desktop: 32px sopra e sotto, 24px ai lati.
+// =============================================================
+.card-valore {
+    // CSS Grid: icona, titolo e testo uno sotto l'altro (le righe restano in alto anche se la card è più alta)
+    display: grid;
+    align-content: start;
+    // Spazi fluidi (funzione "fluido"): valori mobile di Figma a 393px, valori desktop da 1112px, senza salto a 768px
+    gap: fluido(0.5rem, 1rem);
+    padding: fluido(1rem, 2rem) fluido(1rem, 1.5rem);
+    border-radius: 1rem; // 16px
+    background-color: $primario-100;
+}
+
+.card-valore__icona {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem; // 40px
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: $neutro-50;
+
+    img {
+        display: block;
+        width: 1.5rem; // 24px
+        height: 1.5rem;
+    }
+}
+
+.card-valore__titolo {
+    margin: 0;
+    color: $colore-testo; // non $colore-titoli: in Figma questo titolo ha il colore del testo
+    @include stile-testo-fluido($h3-piccolo-mobile, $h3-piccolo-desktop);
+}
+
+.card-valore__testo {
+    margin: 0;
+}
+
+// Variante della card valore con tutto centrato (pagina Chi sono).
+.card-valore--centrata {
+    justify-items: center;
+    text-align: center;
+    // Con container-type nel titolo posso usare cqw (1% della larghezza della card): il testo segue la card.
+    container-type: inline-size;
+    // Spazi: 8px tra le righe; padding fluido sopra e sotto (16px → 24px), 16px ai lati
+    gap: 0.5rem;
+    padding: fluido(1rem, 1.5rem) 1rem;
+
+    .card-valore__icona {
+        margin-bottom: 0.5rem; // 8px + gap 8px = 16px
+    }
+
+    // I titoli stanno sempre su due righe (le interruzioni sono nell'HTML con <br>): nowrap impedisce altri a capo e "min(a, b)"
+    // prende il più piccolo tra la grandezza normale (a) e quella che fa entrare la riga più lunga nella card (b = larghezza / 7,5).
+    .card-valore__titolo {
+        white-space: nowrap;
+        font-size: min(fluido(1.25rem, 1.5625rem), calc(100cqw / 7.5));
+    }
+}
