@@ -46,6 +46,7 @@
 @include da-desktop {
   .hero__colonna-testo {
     display: block;
+    container-type: inline-size; // serve alla regola @container dei bottoni (vedi .hero__azioni)
   }
 
   .hero__blocco {
@@ -189,11 +190,22 @@
 
   @include da-desktop {
     flex-direction: row;
+    flex-wrap: wrap; // se la colonna è stretta (tra 768px e circa 880px) il secondo bottone va sotto invece di uscire dalla colonna
     align-items: center;
-    gap: 1.5rem; // 24px
+    gap: 0.5rem 1.5rem; // 8px quando vanno uno sotto l'altro, 24px quando sono affiancati
     width: auto;
     max-width: none;
     margin-inline: 0;
+  }
+}
+
+// Quando la colonna è stretta (meno di 388px: lo spazio dei due bottoni affiancati) i bottoni vanno uno sotto l'altro
+// e li faccio della stessa larghezza (208px: il testo più lungo, "Scrivimi un messaggio", ne occupa 205).
+// Uso @container: come una media query, ma guarda la larghezza della colonna del testo (.hero__colonna-testo, qui sopra
+// ha container-type) e non quella della finestra. Quando sono affiancati restano della loro larghezza naturale.
+@container (max-width: 24.25rem) {
+  .hero__azioni .btn {
+    min-width: 13rem;
   }
 }
 

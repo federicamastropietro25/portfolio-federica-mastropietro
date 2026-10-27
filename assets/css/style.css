@@ -1254,6 +1254,7 @@ textarea.form-control.campo-input {
 @media (min-width: 768px) {
   .hero__colonna-testo {
     display: block;
+    container-type: inline-size;
   }
   .hero__blocco {
     display: grid;
@@ -1390,14 +1391,20 @@ textarea.form-control.campo-input {
 @media (min-width: 768px) {
   .hero__azioni {
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.5rem 1.5rem;
     width: auto;
     max-width: none;
     margin-inline: 0;
   }
 }
 
+@container (max-width: 24.25rem) {
+  .hero__azioni .btn {
+    min-width: 13rem;
+  }
+}
 .fascia-competenze {
   overflow: hidden;
   background-color: #ECD5CD;
@@ -1829,7 +1836,7 @@ textarea.form-control.campo-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-width: 16.6875rem;
+  max-width: clamp(16.6875rem, 57vw + 43px, 30rem);
   margin-inline: auto;
   text-align: center;
 }

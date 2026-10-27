@@ -397,8 +397,8 @@
 }
 
 // =============================================================
-// INVITO FINALE: "Ti va di collaborare?" + due bottoni
-// Mobile: testo centrato (largo al massimo 267px) e bottoni a tutta larghezza uno sotto l'altro.
+// INVITO FINALE: "Vuoi creare qualcosa insieme?" + due bottoni
+// Mobile: testo centrato (larghezza fluida da 267px) e bottoni a tutta larghezza uno sotto l'altro.
 // Desktop: testo a sinistra e bottoni affiancati, centrati.
 // =============================================================
 .collabora {
@@ -415,7 +415,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem; // 8px
-  max-width: 16.6875rem; // 267px
+  // Larghezza del testo su mobile: cresce piano piano da 267px (393px) a circa 480px (767px), così il titolo non va su troppe righe.
+  // Il calcolo è: 57vw + 43px.
+  max-width: clamp(16.6875rem, calc(57vw + 43px), 30rem);
   margin-inline: auto;
   text-align: center;
 
