@@ -1852,6 +1852,9 @@ textarea.form-control.campo-input {
 .collabora__testi p {
   margin: 0;
 }
+.collabora__testi p {
+  text-wrap: balance;
+}
 
 .collabora__azioni {
   display: flex;

@@ -432,6 +432,12 @@
   p {
     margin: 0;
   }
+
+  // text-wrap: balance divide le parole in modo che le righe abbiano più o meno la stessa lunghezza:
+  // così non resta una riga finale con poche parole. Nei browser vecchi che non lo conoscono il testo va a capo come sempre.
+  p {
+    text-wrap: balance;
+  }
 }
 
 .collabora__azioni {
